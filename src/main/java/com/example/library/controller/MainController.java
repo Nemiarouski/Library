@@ -1,11 +1,9 @@
 package com.example.library.controller;
 
-import com.example.library.model.Reader;
 import com.example.library.service.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @RestController
 public class MainController {
@@ -16,23 +14,18 @@ public class MainController {
         this.readerService = readerService;
     }
 
-    @GetMapping("/hello")
+    @GetMapping("/")
     public String hello() {
-        return "Hello, everyone!";
+        return "Hello";
     }
 
     @GetMapping("/user")
     public String user() {
-        return "Hello, user!";
+        return "User";
     }
 
     @GetMapping("/admin")
     public String admin() {
-        return "Hello";
-    }
-
-    @GetMapping("/")
-    public String main() {
-        return "Main page.";
+        return "Admin";
     }
 }

@@ -1,6 +1,6 @@
 package com.example.library.service;
 
-import com.example.library.dao.ReaderDao;
+import com.example.library.repository.ReaderRepository;
 import com.example.library.model.Reader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,22 +8,23 @@ import java.util.List;
 
 @Service
 public class ReaderService {
-    private final ReaderDao readerDao;
+    private final ReaderRepository readerRepository;
 
     @Autowired
-    public ReaderService(ReaderDao readerDao) {
-        this.readerDao = readerDao;
+    public ReaderService(ReaderRepository readerRepository) {
+        this.readerRepository = readerRepository;
     }
 
     public List<Reader> findAll() {
-        return readerDao.findAll();
+        return readerRepository.findAll();
     }
 
-    public List<Reader> findByName(String name) {
-        return readerDao.findByName(name);
+    public void save(Reader reader) {
+        readerRepository.save(reader);
     }
 
-    public List<Reader> findBySurname(String surname) {
-        return readerDao.findByName(surname);
+    public void delete(Reader reader) {
+        readerRepository.delete(reader);
     }
+
 }

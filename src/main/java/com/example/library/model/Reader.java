@@ -22,16 +22,20 @@ public class Reader {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role_type")
-    private String roleType;
+    @Column(name = "enable")
+    private Boolean enable;
+
+    @Column(name = "authority")
+    private String authority;
 
     public Reader() {}
-    public Reader(String name, String surname, String login, String password, String roleType) {
+    public Reader(String name, String surname, String login, String password, Boolean enable, String authority) {
         this.name = name;
         this.surname = surname;
         this.login = login;
         this.password = password;
-        this.roleType = roleType;
+        this.enable = enable;
+        this.authority = authority;
     }
 
     public Long getId() {
@@ -74,12 +78,20 @@ public class Reader {
         this.password = password;
     }
 
-    public String getRoleType() {
-        return roleType;
+    public Boolean getEnable() {
+        return enable;
     }
 
-    public void setRoleType(String roleType) {
-        this.roleType = roleType;
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 
     @Override
@@ -90,7 +102,7 @@ public class Reader {
                 ", surname='" + surname + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", roleType='" + roleType + '\'' +
+                ", roleType='" + authority + '\'' +
                 '}';
     }
 }
