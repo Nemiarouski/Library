@@ -25,7 +25,8 @@ public class ReaderService {
     }
 
     public Reader getById(Long id) {
-        return readerRepository.getById(id);
+        Optional<Reader> reader = findAll().stream().filter(l -> l.getId().equals(id)).findFirst();
+        return reader.orElseGet(Reader::new);
     }
 
     public void delete(Long id) {

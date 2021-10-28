@@ -22,4 +22,9 @@ public class ReaderController {
     public void update(@PathVariable Long id, @RequestBody Reader reader) {
         readerService.update(id, reader);
     }
+
+    @GetMapping("/{id}")
+    public Reader getById(@PathVariable Long id) {
+        return readerService.getById(id);
+    }
 }
