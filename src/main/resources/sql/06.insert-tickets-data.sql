@@ -1,4 +1,4 @@
-INSERT INTO tickets (reader_id, books_id, date_from, date_to) VALUES
+INSERT INTO tickets (reader_id, book_id, date_from, date_to) VALUES
 (1, 2, '2021-03-24', '2021-04-01'),
 (2, 1, '2021-03-27', '2021-04-14'),
 (2, 2, '2021-05-01', '2021-05-07'),
