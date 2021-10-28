@@ -19,11 +19,15 @@ public class Book {
     @Column(name = "year")
     private String year;
 
+    @Column(name = "busy")
+    private Boolean busy;
+
     public Book() {}
-    public Book(String name, String author, String year) {
+    public Book(String name, String author, String year, Boolean busy) {
         this.name = name;
         this.author = author;
         this.year = year;
+        this.busy = busy;
     }
 
     public Long getId() {
@@ -58,6 +62,14 @@ public class Book {
         this.year = year;
     }
 
+    public Boolean getBusy() {
+        return busy;
+    }
+
+    public void setBusy(Boolean busy) {
+        this.busy = busy;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -65,6 +77,7 @@ public class Book {
                 ", name='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", year='" + year + '\'' +
+                ", busy=" + busy +
                 '}';
     }
 }
