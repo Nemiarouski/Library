@@ -8,7 +8,6 @@ import com.example.library.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("admin")
@@ -31,7 +30,7 @@ public class AdminController {
 
     @DeleteMapping("/readers/{id}")
     public void deleteReader(@PathVariable Long id) {
-        readerService.findAll().stream().filter(l -> l.getId().equals(id)).findFirst().ifPresent(readerService::delete);
+        readerService.delete(id);
     }
 
     @GetMapping("/readers")
@@ -46,20 +45,12 @@ public class AdminController {
 
     @PutMapping("/books/{id}")
     public void update(@PathVariable Long id, @RequestBody Book book) {
-        Optional<Book> bookFromDB = bookService.findAll().stream().filter(b -> b.getId().equals(id)).findFirst();
-        if (bookFromDB.isPresent()) {
-            Book newBook = bookFromDB.get();
-            newBook.setName(book.getName());
-            newBook.setAuthor(book.getAuthor());
-            newBook.setYear(book.getYear());
-            newBook.setBusy(book.getBusy());
-            bookService.update(newBook);
-        }
+        bookService.update(id, book);
     }
 
     @DeleteMapping("/books/{id}")
     public void deleteBook(@PathVariable Long id) {
-        bookService.findAll().stream().filter(b -> b.getId().equals(id)).findFirst().ifPresent(bookService::delete);
+        bookService.delete(id);
     }
 
     @GetMapping("/books")
@@ -69,11 +60,6 @@ public class AdminController {
 
     @GetMapping("books/{id}")
     public Book getById(@PathVariable Long id) {
-        Optional<Book> book = bookService.findAll().stream().filter(l -> l.getId().equals(id)).findFirst();
-        return book.orElseGet(Book::new);//redirect to all books?
+        return bookService.getById(id);
     }
-
-
-
-
 }

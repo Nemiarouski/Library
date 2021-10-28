@@ -27,8 +27,8 @@ public class ReaderService {
         return readerRepository.getById(id);
     }
 
-    public void delete(Reader reader) {
-        readerRepository.delete(reader);
+    public void delete(Long id) {
+        findAll().stream().filter(l -> l.getId().equals(id)).findFirst().ifPresent(readerRepository::delete);
     }
 
     public void update(Reader reader) {

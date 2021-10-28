@@ -5,6 +5,7 @@ import com.example.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -24,14 +25,23 @@ public class BookService {
     }
 
     public Book getById(Long id) {
-        return bookRepository.getById(id);
+        Optional<Book> book = findAll().stream().filter(l -> l.getId().equals(id)).findFirst();
+        return book.orElseGet(Book::new);
     }
 
-    public void update(Book book) {
-        bookRepository.saveAndFlush(book);
+    public void update(Long id, Book book) {
+        Optional<Book> bookFromDB = findAll().stream().filter(b -> b.getId().equals(id)).findFirst();
+        if (bookFromDB.isPresent()) {
+            Book oldBook = bookFromDB.get();
+            oldBook.setName(book.getName());
+            oldBook.setAuthor(book.getAuthor());
+            oldBook.setYear(book.getYear());
+            oldBook.setBusy(book.getBusy());
+            bookRepository.saveAndFlush(oldBook);
+        }
     }
 
-    public void delete(Book book) {
-        bookRepository.delete(book);
+    public void delete(Long id) {
+        findAll().stream().filter(b -> b.getId().equals(id)).findFirst().ifPresent(bookRepository::delete);
     }
 }
