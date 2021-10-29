@@ -2,6 +2,7 @@ package com.example.library.controller;
 
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
+import com.example.library.model.Ticket;
 import com.example.library.service.BookService;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
@@ -72,5 +73,11 @@ public class AdminController {
     @ApiOperation("Получение одной книги")
     public Book getById(@PathVariable Long id) {
         return bookService.getById(id);
+    }
+
+    @GetMapping("/tickets")
+    @ApiOperation("Получение билетов")
+    public List<Ticket> getTickets() {
+        return ticketService.findAll();
     }
 }
