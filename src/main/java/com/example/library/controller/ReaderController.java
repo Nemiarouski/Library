@@ -1,7 +1,6 @@
 package com.example.library.controller;
 
 import com.example.library.model.Reader;
-import com.example.library.service.BookService;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
 import io.swagger.annotations.Api;
@@ -15,20 +14,12 @@ import java.util.List;
 @Api(tags = "Readers")
 public class ReaderController {
     private final ReaderService readerService;
-    private final BookService bookService;
     private final TicketService ticketService;
 
     @Autowired
-    public ReaderController(ReaderService readerService, BookService bookService, TicketService ticketService) {
+    public ReaderController(ReaderService readerService, TicketService ticketService) {
         this.readerService = readerService;
-        this.bookService = bookService;
         this.ticketService = ticketService;
-    }
-
-    @PutMapping("/{id}")
-    @ApiOperation("Обновить информацию о читателе")
-    public void update(@PathVariable Long id, @RequestBody Reader reader) {
-        readerService.update(id, reader);
     }
 
     @GetMapping("/{id}")
@@ -37,20 +28,24 @@ public class ReaderController {
         return readerService.getById(id);
     }
 
+    @PutMapping("/{id}")
+    @ApiOperation("Обновить информацию о читателе")
+    public void updateReaderInformation(@PathVariable Long id, @RequestBody Reader reader) {
+        readerService.update(id, reader);
+    }
+
     @PostMapping("/{id}")
     @ApiOperation("Читатель берет книгу")
     public void getBook(@PathVariable Long id,
-                        @RequestBody Long bookId,
-                        @RequestParam String date) {
-        ticketService.getBook(id, bookId, date);
+                        @RequestBody Long bookId) {
+        ticketService.getBook(id, bookId);
     }
 
-    @PostMapping("/{id}/r")
+    @PostMapping("/{id}/return")
     @ApiOperation("Читатель возвращает книгу")
     public void returnBook(@PathVariable Long id,
-                           @RequestBody Long bookId,
-                           @RequestParam String date) {
-        ticketService.returnBook(id, bookId, date);
+                           @RequestBody Long bookId) {
+        ticketService.returnBook(id, bookId);
     }
 
     @GetMapping("/{id}/books")
