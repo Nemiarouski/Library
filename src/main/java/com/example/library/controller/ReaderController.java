@@ -17,7 +17,8 @@ public class ReaderController {
     private final TicketService ticketService;
 
     @Autowired
-    public ReaderController(ReaderService readerService, TicketService ticketService) {
+    public ReaderController(ReaderService readerService,
+                            TicketService ticketService) {
         this.readerService = readerService;
         this.ticketService = ticketService;
     }
@@ -30,7 +31,8 @@ public class ReaderController {
 
     @PutMapping("/{id}")
     @ApiOperation("Обновить информацию о читателе")
-    public void updateReaderInformation(@PathVariable Long id, @RequestBody Reader reader) {
+    public void updateReaderInformation(@PathVariable Long id,
+                                        @RequestBody Reader reader) {
         readerService.update(id, reader);
     }
 

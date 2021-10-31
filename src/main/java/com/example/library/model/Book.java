@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book implements Comparable<Book> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,5 +79,16 @@ public class Book {
                 ", year='" + year + '\'' +
                 ", busy=" + busy +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        if (this.name.equals(o.getName())) {
+            return 0;
+        } else if (this.getName().compareTo(o.getName()) < 0) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }

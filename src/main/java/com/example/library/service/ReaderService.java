@@ -25,16 +25,18 @@ public class ReaderService {
     }
 
     public Reader getById(Long id) {
-        Optional<Reader> reader = findAll().stream().filter(l -> l.getId().equals(id)).findFirst();
+        Optional<Reader> reader = findAll().stream()
+                .filter(l -> l.getId().equals(id))
+                .findFirst();
+
         return reader.orElseGet(Reader::new);
     }
 
-    public void delete(Long id) {
-        findAll().stream().filter(l -> l.getId().equals(id)).findFirst().ifPresent(readerRepository::delete);
-    }
-
     public void update(Long id, Reader reader) {
-        Optional<Reader> readerFromDB = findAll().stream().filter(r -> r.getId().equals(id)).findFirst();
+        Optional<Reader> readerFromDB = findAll().stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst();
+
         if (readerFromDB.isPresent()) {
             Reader oldReader = readerFromDB.get();
             oldReader.setName(reader.getName());
@@ -43,5 +45,12 @@ public class ReaderService {
             oldReader.setPassword(reader.getPassword());
             readerRepository.saveAndFlush(oldReader);
         }
+    }
+
+    public void delete(Long id) {
+        findAll().stream()
+                .filter(l -> l.getId().equals(id))
+                .findFirst()
+                .ifPresent(readerRepository::delete);
     }
 }

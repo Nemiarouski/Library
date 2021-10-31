@@ -20,7 +20,9 @@ public class AdminController {
     private final TicketService ticketService;
 
     @Autowired
-    public AdminController(ReaderService readerService, BookService bookService, TicketService ticketService) {
+    public AdminController(ReaderService readerService,
+                           BookService bookService,
+                           TicketService ticketService) {
         this.readerService = readerService;
         this.bookService = bookService;
         this.ticketService = ticketService;
@@ -52,7 +54,8 @@ public class AdminController {
 
     @PutMapping("/books/{id}")
     @ApiOperation("Внесение изменений в существующую книгу")
-    public void update(@PathVariable Long id, @RequestBody Book book) {
+    public void update(@PathVariable Long id,
+                       @RequestBody Book book) {
         bookService.update(id, book);
     }
 

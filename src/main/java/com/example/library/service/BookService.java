@@ -25,12 +25,18 @@ public class BookService {
     }
 
     public Book getById(Long id) {
-        Optional<Book> book = findAll().stream().filter(l -> l.getId().equals(id)).findFirst();
+        Optional<Book> book = findAll().stream()
+                .filter(l -> l.getId().equals(id))
+                .findFirst();
+
         return book.orElseGet(Book::new);
     }
 
     public void update(Long id, Book book) {
-        Optional<Book> bookFromDB = findAll().stream().filter(b -> b.getId().equals(id)).findFirst();
+        Optional<Book> bookFromDB = findAll().stream()
+                .filter(b -> b.getId().equals(id))
+                .findFirst();
+
         if (bookFromDB.isPresent()) {
             Book oldBook = bookFromDB.get();
             oldBook.setName(book.getName());
@@ -42,6 +48,9 @@ public class BookService {
     }
 
     public void delete(Long id) {
-        findAll().stream().filter(b -> b.getId().equals(id)).findFirst().ifPresent(bookRepository::delete);
+        findAll().stream()
+                .filter(b -> b.getId().equals(id))
+                .findFirst()
+                .ifPresent(bookRepository::delete);
     }
 }
