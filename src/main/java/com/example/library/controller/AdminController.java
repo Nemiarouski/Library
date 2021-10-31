@@ -2,7 +2,6 @@ package com.example.library.controller;
 
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
-import com.example.library.model.Ticket;
 import com.example.library.service.BookService;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("admin")
-@Api
+@Api(tags = "Admin")
 public class AdminController {
     private final ReaderService readerService;
     private final BookService bookService;
@@ -77,7 +76,7 @@ public class AdminController {
 
     @GetMapping("/tickets")
     @ApiOperation("Получение билетов")
-    public List<Ticket> getTickets() {
-        return ticketService.findAll();
+    public List<String> getTickets() {
+        return ticketService.findAllTickets();
     }
 }
