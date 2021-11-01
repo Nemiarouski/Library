@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS books (
     name VARCHAR(100) NOT NULL,
     author VARCHAR(100) NOT NULL,
     year VARCHAR(4) NOT NULL,
-    busy BOOLEAN NOT NULL,
+    amount INT NOT NULL,
     UNIQUE (name)
 );
 
@@ -36,12 +36,12 @@ INSERT INTO readers (name, surname, login, password, enable, authority) VALUES
 ('Michel', 'Jackson', 'king', '777', 'true', 'ROLE_READER'),
 ('Jeff', 'Bezos', 'rocketman', '2021', 'true', 'ROLE_ADMIN');
 
-INSERT INTO books (name, author, year, busy) VALUES
-('Cloud Atlas', 'David Mitchell', '2004', 'false'),
-('Erich Maria Remarque', 'Triumphal Arch', '1945', 'false'),
-('Jack London', 'Martin Eden', '1909', 'false'),
-('Stephen King', 'On Writing: A Memoir of the Craft', '2010', 'false'),
-('Joseph John Campbell', 'The Hero with a Thousand Faces', '1949', 'false');
+INSERT INTO books (name, author, year, amount) VALUES
+('Cloud Atlas', 'David Mitchell', '2004', '1'),
+('Erich Maria Remarque', 'Triumphal Arch', '1945', '6'),
+('Jack London', 'Martin Eden', '1909', '2'),
+('Stephen King', 'On Writing: A Memoir of the Craft', '2010', '4'),
+('Joseph John Campbell', 'The Hero with a Thousand Faces', '1949', '5');
 
 INSERT INTO tickets (reader_id, book_id, date_from, date_to) VALUES
 (1, 4, '2020-04-18 13:12', '2020-05-12 17:00'),

@@ -9,6 +9,7 @@ import com.example.library.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -32,21 +33,24 @@ public class TicketService {
     public void getBook(Long id, Long bookId) {
         Reader reader = readerRepository.getById(id);
         Book book = bookRepository.getById(bookId);
-        book.setBusy(true);
 
-        Ticket ticket = new Ticket(reader, book, getTime(), "");
-        ticketRepository.saveAndFlush(ticket);
+        if (book.getAmount() >= 1) {
+            book.setAmount(book.getAmount() - 1);
+            Ticket ticket = new Ticket(reader, book, getTime(), "");
+            ticketRepository.saveAndFlush(ticket);
+        } else {
+            //In this moment program throws exception.
+        }
     }
 
     public void returnBook(Long id, Long bookId) {
         Book book = bookRepository.getById(bookId);
-        book.setBusy(false);
-
         Optional<Ticket> ticket = findAll().stream()
                 .filter(t -> t.getReaderId().getId().equals(id) & t.getBookId().getId().equals(bookId))
                 .findFirst();
 
-        if(ticket.isPresent()) {
+        if(ticket.isPresent() && ticket.get().getDateTo().equals("")) {
+            book.setAmount(book.getAmount() + 1);
             Ticket oldTicket = ticket.get();
             oldTicket.setDateTo(getTime());
             ticketRepository.saveAndFlush(oldTicket);
@@ -82,8 +86,6 @@ public class TicketService {
     }
 
     private String getTime() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return localDateTime.getYear() + "-" + localDateTime.getMonthValue() + "-" + localDateTime.getDayOfMonth()
-                + " " + localDateTime.getHour() + ":" + localDateTime.getMinute();
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

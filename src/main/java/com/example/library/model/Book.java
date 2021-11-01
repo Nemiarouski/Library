@@ -19,15 +19,15 @@ public class Book implements Comparable<Book> {
     @Column(name = "year")
     private String year;
 
-    @Column(name = "busy")
-    private Boolean busy;
+    @Column(name = "amount")
+    private Long amount;
 
     public Book() {}
-    public Book(String name, String author, String year, Boolean busy) {
+    public Book(String name, String author, String year, Long amount) {
         this.name = name;
         this.author = author;
         this.year = year;
-        this.busy = busy;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -62,12 +62,12 @@ public class Book implements Comparable<Book> {
         this.year = year;
     }
 
-    public Boolean getBusy() {
-        return busy;
+    public Long getAmount() {
+        return amount;
     }
 
-    public void setBusy(Boolean busy) {
-        this.busy = busy;
+    public void setAmount(Long amount) {
+        this.amount = amount;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class Book implements Comparable<Book> {
                 ", name='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", year='" + year + '\'' +
-                ", busy=" + busy +
+                ", amount=" + amount +
                 '}';
     }
 

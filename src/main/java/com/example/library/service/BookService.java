@@ -42,7 +42,7 @@ public class BookService {
             oldBook.setName(book.getName());
             oldBook.setAuthor(book.getAuthor());
             oldBook.setYear(book.getYear());
-            oldBook.setBusy(book.getBusy());
+            oldBook.setAmount(book.getAmount());
             bookRepository.saveAndFlush(oldBook);
         }
     }
