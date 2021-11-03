@@ -1,7 +1,10 @@
 package com.example.library.service;
 
+import com.example.library.exception.NotFoundException;
 import com.example.library.model.Reader;
 import com.example.library.repository.ReaderRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class ReaderService {
+    private static final Logger logger = LogManager.getLogger();
     private final ReaderRepository readerRepository;
 
     @Autowired
@@ -25,11 +29,10 @@ public class ReaderService {
     }
 
     public Reader getById(Long id) {
-        Optional<Reader> reader = findAll().stream()
+        return findAll().stream()
                 .filter(l -> l.getId().equals(id))
-                .findFirst();
-
-        return reader.orElseGet(Reader::new);
+                .findFirst()
+                .orElseThrow(NotFoundException::new);
     }
 
     public void update(Long id, Reader reader) {

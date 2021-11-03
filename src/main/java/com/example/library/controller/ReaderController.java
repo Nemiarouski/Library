@@ -1,5 +1,6 @@
 package com.example.library.controller;
 
+import com.example.library.dto.TicketDto;
 import com.example.library.model.Reader;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
@@ -52,7 +53,7 @@ public class ReaderController {
 
     @GetMapping("/{id}/books")
     @ApiOperation("Просмотр нынешних или взятых ранее книг читателя")
-    public List<String> getReaderBooks(@PathVariable Long id) {
+    public List<TicketDto> getReaderBooks(@PathVariable Long id) {
         return ticketService.getReaderBooks(id);
     }
 }
