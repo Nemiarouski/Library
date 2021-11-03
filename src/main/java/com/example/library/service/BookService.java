@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public class BookService {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(BookService.class);
     private BookRepository bookRepository;
     private TicketRepository ticketRepository;
 
@@ -33,17 +33,8 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book getByIdTest(Long id) {
-        Optional<Book> book = findAll().stream()
-                .filter(l -> l.getId().equals(id))
-                .findFirst();
-        return book.orElseGet(Book::new);
-    }
-
     public BookDto getById(Long id) {
-        Optional<Book> book = findAll().stream()
-                .filter(l -> l.getId().equals(id))
-                .findFirst();
+        Optional<Book> book = bookRepository.findById(id);
 
         if (book.isPresent()) {
             Long count = ticketRepository.findAll().stream()
@@ -51,15 +42,13 @@ public class BookService {
                     .count();
             return new BookDto(book.get(), count);
         } else {
-            logger.info("Book is not exist.");
-            throw  new NotFoundException();
+            logger.info("Book is not found");
+            throw new NotFoundException();
         }
     }
 
     public void update(Long id, Book book) {
-        Optional<Book> bookFromDB = findAll().stream()
-                .filter(b -> b.getId().equals(id))
-                .findFirst();
+        Optional<Book> bookFromDB = bookRepository.findById(id);
 
         if (bookFromDB.isPresent() && book.getAmount() >= countBusyBooks(id)) {
             Book oldBook = bookFromDB.get();
@@ -70,19 +59,16 @@ public class BookService {
             bookRepository.saveAndFlush(oldBook);
         } else {
             logger.info("Book is not exist.");
-            throw  new NotFoundException();
+            throw new NotFoundException();
         }
     }
 
     public void delete(Long id) {
         if (countBusyBooks(id) == 0) {
-            findAll().stream()
-                    .filter(b -> b.getId().equals(id))
-                    .findFirst()
-                    .ifPresent(bookRepository::delete);
+            bookRepository.findById(id).ifPresent(bookRepository::delete);
         } else {
             logger.info("Book is not exist.");
-            throw  new NotFoundException();
+            throw new NotFoundException();
         }
     }
 

@@ -36,30 +36,30 @@ public class TicketService {
     }
 
     public void getBook(Long id, Long bookId) {
-        Reader reader = readerRepository.getById(id);
-        Book book = bookRepository.getById(bookId);
+        Optional<Reader> reader = readerRepository.findById(id);
+        Optional<Book> book = bookRepository.findById(bookId);
 
-        if (book.getAmount() >= 1) {
-            book.setAmount(book.getAmount() - 1);
-            Ticket ticket = new Ticket(reader, book, getTime(), "");
+        if (reader.isPresent() && book.isPresent() && book.get().getAmount() >= 1) {
+            book.get().setAmount(book.get().getAmount() - 1);
+            Ticket ticket = new Ticket(reader.get(), book.get(), getTime(), "");
             ticketRepository.saveAndFlush(ticket);
         } else {
-            logger.info("Book is not exist.");
+            logger.info("Reader or book is not exist.");
             throw  new NotFoundException();
         }
     }
 
     public void returnBook(Long id, Long bookId) {
-        Book book = bookRepository.getById(bookId);
+        Optional<Book> book = bookRepository.findById(bookId);
         Optional<Ticket> ticket = findAll().stream()
-                .filter(t -> t.getReaderId().getId().equals(id) && t.getBookId().getId().equals(bookId))
+                .filter(t -> t.getReaderId().getId().equals(id) && t.getBookId().getId().equals(bookId) && t.getDateTo().equals(""))
                 .findFirst();
 
-        if(ticket.isPresent() && ticket.get().getDateTo().isEmpty()) {
-            book.setAmount(book.getAmount() + 1);
-            Ticket oldTicket = ticket.get();
-            oldTicket.setDateTo(getTime());
-            ticketRepository.saveAndFlush(oldTicket);
+        if(ticket.isPresent() && book.isPresent()) {
+            Ticket newTicket = ticket.get();
+            book.get().setAmount(book.get().getAmount() + 1);
+            newTicket.setDateTo(getTime());
+            ticketRepository.saveAndFlush(newTicket);
         } else {
             logger.info("Ticket is not exist.");
             throw  new NotFoundException();

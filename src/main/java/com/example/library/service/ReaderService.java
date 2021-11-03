@@ -29,9 +29,7 @@ public class ReaderService {
     }
 
     public Reader getById(Long id) {
-        Optional<Reader> reader = findAll().stream()
-                .filter(l -> l.getId().equals(id))
-                .findFirst();
+        Optional<Reader> reader = readerRepository.findById(id);
 
         if (reader.isPresent()) {
             return reader.get();
@@ -42,9 +40,7 @@ public class ReaderService {
     }
 
     public void update(Long id, Reader reader) {
-        Optional<Reader> readerFromDB = findAll().stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst();
+        Optional<Reader> readerFromDB = readerRepository.findById(id);
 
         if (readerFromDB.isPresent()) {
             Reader oldReader = readerFromDB.get();
@@ -52,6 +48,8 @@ public class ReaderService {
             oldReader.setSurname(reader.getSurname());
             oldReader.setLogin(reader.getLogin());
             oldReader.setPassword(reader.getPassword());
+            oldReader.setEnable(reader.getEnable());
+            oldReader.setAuthority(reader.getAuthority());
             readerRepository.saveAndFlush(oldReader);
         } else {
             logger.info("Reader is not exist.");
@@ -60,9 +58,7 @@ public class ReaderService {
     }
 
     public void delete(Long id) {
-        Optional<Reader> reader = findAll().stream()
-                .filter(l -> l.getId().equals(id))
-                .findFirst();
+        Optional<Reader> reader = readerRepository.findById(id);
 
         if(reader.isPresent()) {
             readerRepository.delete(reader.get());
