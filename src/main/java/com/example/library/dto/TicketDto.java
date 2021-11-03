@@ -1,12 +1,16 @@
 package com.example.library.dto;
 
 import com.example.library.model.Ticket;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class TicketDto {
     private Long id;
+    @JsonView(View.ReaderInfo.class)
     private String bookName;
     private String readerName;
+    @JsonView(View.ReaderInfo.class)
     private String dateFrom;
+    @JsonView(View.ReaderInfo.class)
     private String dateTo;
 
     public TicketDto() {}

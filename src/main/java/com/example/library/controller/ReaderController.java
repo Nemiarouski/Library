@@ -1,9 +1,11 @@
 package com.example.library.controller;
 
 import com.example.library.dto.TicketDto;
+import com.example.library.dto.View;
 import com.example.library.model.Reader;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,7 @@ public class ReaderController {
     }
 
     @GetMapping("/{id}/books")
+    @JsonView(View.ReaderInfo.class)
     @ApiOperation("Просмотр нынешних или взятых ранее книг читателя")
     public List<TicketDto> getReaderBooks(@PathVariable Long id) {
         return ticketService.getReaderBooks(id);
