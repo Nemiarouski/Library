@@ -1,5 +1,7 @@
 package com.example.library.controller;
 
+import com.example.library.dto.BookDto;
+import com.example.library.dto.TicketDto;
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
 import com.example.library.service.BookService;
@@ -73,13 +75,13 @@ public class AdminController {
 
     @GetMapping("books/{id}")
     @ApiOperation("Получение одной книги")
-    public Book getById(@PathVariable Long id) {
+    public BookDto getById(@PathVariable Long id) {
         return bookService.getById(id);
     }
 
     @GetMapping("/tickets")
     @ApiOperation("Получение билетов")
-    public List<String> getTickets() {
+    public List<TicketDto> getTickets() {
         return ticketService.findAllTickets();
     }
 }
