@@ -68,6 +68,9 @@ public class BookService {
             oldBook.setYear(book.getYear());
             oldBook.setAmount(book.getAmount());
             bookRepository.saveAndFlush(oldBook);
+        } else {
+            logger.info("Book is not exist.");
+            throw  new NotFoundException();
         }
     }
 
@@ -77,6 +80,9 @@ public class BookService {
                     .filter(b -> b.getId().equals(id))
                     .findFirst()
                     .ifPresent(bookRepository::delete);
+        } else {
+            logger.info("Book is not exist.");
+            throw  new NotFoundException();
         }
     }
 

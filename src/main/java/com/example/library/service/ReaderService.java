@@ -29,10 +29,16 @@ public class ReaderService {
     }
 
     public Reader getById(Long id) {
-        return findAll().stream()
+        Optional<Reader> reader = findAll().stream()
                 .filter(l -> l.getId().equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);
+                .findFirst();
+
+        if (reader.isPresent()) {
+            return reader.get();
+        } else {
+            logger.info("Reader is not exist.");
+            throw  new NotFoundException();
+        }
     }
 
     public void update(Long id, Reader reader) {
@@ -47,13 +53,22 @@ public class ReaderService {
             oldReader.setLogin(reader.getLogin());
             oldReader.setPassword(reader.getPassword());
             readerRepository.saveAndFlush(oldReader);
+        } else {
+            logger.info("Reader is not exist.");
+            throw  new NotFoundException();
         }
     }
 
     public void delete(Long id) {
-        findAll().stream()
+        Optional<Reader> reader = findAll().stream()
                 .filter(l -> l.getId().equals(id))
-                .findFirst()
-                .ifPresent(readerRepository::delete);
+                .findFirst();
+
+        if(reader.isPresent()) {
+            readerRepository.delete(reader.get());
+        } else {
+            logger.info("Reader is not exist.");
+            throw  new NotFoundException();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.dto.TicketDto;
+import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
 import com.example.library.model.Ticket;
@@ -42,6 +43,9 @@ public class TicketService {
             book.setAmount(book.getAmount() - 1);
             Ticket ticket = new Ticket(reader, book, getTime(), "");
             ticketRepository.saveAndFlush(ticket);
+        } else {
+            logger.info("Book is not exist.");
+            throw  new NotFoundException();
         }
     }
 
@@ -56,6 +60,9 @@ public class TicketService {
             Ticket oldTicket = ticket.get();
             oldTicket.setDateTo(getTime());
             ticketRepository.saveAndFlush(oldTicket);
+        } else {
+            logger.info("Ticket is not exist.");
+            throw  new NotFoundException();
         }
     }
 
