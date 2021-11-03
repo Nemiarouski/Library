@@ -27,8 +27,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     reader_id INT NOT NULL REFERENCES readers (id) ON DELETE CASCADE,
     book_id INT NOT NULL REFERENCES books (id) ON DELETE CASCADE,
     date_from VARCHAR(16) NOT NULL,
-    date_to VARCHAR(16),
-    UNIQUE (reader_id, book_id)
+    date_to VARCHAR(16)
 );
 
 INSERT INTO readers (name, surname, login, password, enable, authority) VALUES
@@ -38,10 +37,10 @@ INSERT INTO readers (name, surname, login, password, enable, authority) VALUES
 
 INSERT INTO books (name, author, year, amount) VALUES
 ('Cloud Atlas', 'David Mitchell', '2004', '1'),
-('Erich Maria Remarque', 'Triumphal Arch', '1945', '6'),
-('Jack London', 'Martin Eden', '1909', '2'),
-('Stephen King', 'On Writing: A Memoir of the Craft', '2010', '4'),
-('Joseph John Campbell', 'The Hero with a Thousand Faces', '1949', '5');
+('Triumphal Arch', 'Erich Maria Remarque', '1945', '6'),
+('Martin Eden', 'Jack London', '1909', '2'),
+('On Writing: A Memoir of the Craft', 'Stephen King', '2010', '4'),
+('The Hero with a Thousand Faces', 'Joseph John Campbell', '1949', '5');
 
 INSERT INTO tickets (reader_id, book_id, date_from, date_to) VALUES
 (1, 4, '2020-04-18 13:12', '2020-05-12 17:00'),
