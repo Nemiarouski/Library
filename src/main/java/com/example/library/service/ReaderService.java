@@ -6,6 +6,8 @@ import com.example.library.repository.ReaderRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,10 @@ public class ReaderService {
     @Autowired
     public ReaderService(ReaderRepository readerRepository) {
         this.readerRepository = readerRepository;
+    }
+
+    public Page<Reader> findReaders(Pageable pageable) {
+        return readerRepository.findAll(pageable);
     }
 
     public void save(Reader reader) {

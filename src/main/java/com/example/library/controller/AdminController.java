@@ -10,7 +10,12 @@ import com.example.library.service.TicketService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -46,6 +51,15 @@ public class AdminController {
     @ApiOperation("Получение списка всех читателей")
     public List<Reader> allReaders() {
         return readerService.findAll();
+    }
+
+    //Method to use Pageable.
+    @GetMapping("/readers/pageable/{page}")
+    public List<Reader> showReaders(@PathVariable int page,
+                                    @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reader> readers = readerService.findReaders(pageable);
+        return readers.getContent();
     }
 
     @PostMapping("/books/new")
