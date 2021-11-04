@@ -1,19 +1,21 @@
 package com.example.library.controller;
 
 import com.example.library.dto.BookDto;
+import com.example.library.dto.BookInformation;
 import com.example.library.dto.TicketDto;
+import com.example.library.dto.View;
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
 import com.example.library.service.BookService;
 import com.example.library.service.ReaderService;
 import com.example.library.service.TicketService;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -82,9 +84,10 @@ public class AdminController {
     }
 
     @GetMapping("/books")
+    @JsonView(View.AdminInfo.class)
     @ApiOperation("Получение всех книг")
-    public List<Book> allBooks() {
-        return bookService.findAll();
+    public BookInformation allBooks() {
+        return bookService.bookInformation();
     }
 
     @GetMapping("books/{id}")

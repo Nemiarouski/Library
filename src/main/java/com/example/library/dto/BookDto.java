@@ -1,9 +1,11 @@
 package com.example.library.dto;
 
 import com.example.library.model.Book;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class BookDto {
     private Long id;
+    @JsonView(View.AdminInfo.class)
     private String name;
     private String author;
     private String year;

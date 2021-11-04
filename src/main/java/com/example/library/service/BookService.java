@@ -1,6 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.dto.BookDto;
+import com.example.library.dto.BookInformation;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
 import com.example.library.repository.BookRepository;
@@ -9,8 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -32,6 +35,25 @@ public class BookService {
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
+
+    public BookInformation bookInformation() {
+        List<BookDto> freeBooks = new ArrayList<>();
+        List<BookDto> busyBooks = new ArrayList<>();
+
+        List<BookDto> dtoBooks = bookRepository.findAll().stream()
+                .map(b -> new BookDto(b, countBusyBooks(b.getId())))
+                .collect(Collectors.toList());
+
+        for (BookDto dtoBook : dtoBooks) {
+            if (dtoBook.getUsed() != 0) {
+                busyBooks.add(dtoBook);
+            } else {
+                freeBooks.add(dtoBook);
+            }
+        }
+        return new BookInformation(freeBooks, busyBooks);
+    }
+
 
     public BookDto getById(Long id) {
         Optional<Book> book = bookRepository.findById(id);
