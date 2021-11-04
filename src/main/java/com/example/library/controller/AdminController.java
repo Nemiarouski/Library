@@ -13,12 +13,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("admin")
@@ -55,13 +52,11 @@ public class AdminController {
         return readerService.findAll();
     }
 
-    //Method to use Pageable.
     @GetMapping("/readers/pageable/{page}")
+    @ApiOperation("Создание постраничного вывода")
     public List<Reader> showReaders(@PathVariable int page,
                                     @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Reader> readers = readerService.findReaders(pageable);
-        return readers.getContent();
+        return readerService.findReaders(page, size);
     }
 
     @PostMapping("/books/new")
@@ -97,8 +92,9 @@ public class AdminController {
     }
 
     @GetMapping("/tickets")
+    @JsonView(View.AdminInfo.class)
     @ApiOperation("Получение билетов")
-    public List<TicketDto> getTickets() {
-        return ticketService.findAllTickets();
+    public Map<String, List<TicketDto>> getTickets() {
+        return ticketService.getTickets();
     }
 }

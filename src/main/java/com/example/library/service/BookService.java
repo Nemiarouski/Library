@@ -40,7 +40,7 @@ public class BookService {
         List<BookDto> freeBooks = new ArrayList<>();
         List<BookDto> busyBooks = new ArrayList<>();
 
-        List<BookDto> dtoBooks = bookRepository.findAll().stream()
+        List<BookDto> dtoBooks = findAll().stream()
                 .map(b -> new BookDto(b, countBusyBooks(b.getId())))
                 .collect(Collectors.toList());
 
@@ -54,14 +54,11 @@ public class BookService {
         return new BookInformation(freeBooks, busyBooks);
     }
 
-
     public BookDto getById(Long id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isPresent()) {
-            Long count = ticketRepository.findAll().stream()
-                    .filter(b -> b.getBookId().equals(book.get()) && b.getDateTo().equals(""))
-                    .count();
+            Long count = countBusyBooks(book.get().getId());
             return new BookDto(book.get(), count);
         } else {
             logger.info("Book is not found");
@@ -89,7 +86,7 @@ public class BookService {
         if (countBusyBooks(id) == 0) {
             bookRepository.findById(id).ifPresent(bookRepository::delete);
         } else {
-            logger.info("Book is not exist.");
+            logger.info("Book is not exist or busy.");
             throw new NotFoundException();
         }
     }

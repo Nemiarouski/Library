@@ -16,12 +16,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(TicketService.class);
     private TicketRepository ticketRepository;
     private BookRepository bookRepository;
     private ReaderRepository readerRepository;
@@ -70,13 +71,13 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public List<TicketDto> findAllTickets() {
+    public Map<String, List<TicketDto>> getTickets() {
         return findAll().stream()
                 .sorted(Comparator.comparing(Ticket::getBookId)
                         .thenComparing(Ticket::getDateFrom)
                         .thenComparing(Ticket::getDateTo))
                 .map(TicketDto::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(TicketDto::getBookName));
     }
 
     public List<TicketDto> getReaderBooks(Long id) {

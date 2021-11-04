@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,16 +15,12 @@ import java.util.Optional;
 
 @Service
 public class ReaderService {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(ReaderService.class);
     private final ReaderRepository readerRepository;
 
     @Autowired
     public ReaderService(ReaderRepository readerRepository) {
         this.readerRepository = readerRepository;
-    }
-
-    public Page<Reader> findReaders(Pageable pageable) {
-        return readerRepository.findAll(pageable);
     }
 
     public void save(Reader reader) {
@@ -54,8 +51,6 @@ public class ReaderService {
             oldReader.setSurname(reader.getSurname());
             oldReader.setLogin(reader.getLogin());
             oldReader.setPassword(reader.getPassword());
-            oldReader.setEnable(reader.getEnable());
-            oldReader.setAuthority(reader.getAuthority());
             readerRepository.saveAndFlush(oldReader);
         } else {
             logger.info("Reader is not exist.");
@@ -72,5 +67,11 @@ public class ReaderService {
             logger.info("Reader is not exist.");
             throw  new NotFoundException();
         }
+    }
+
+    public List<Reader> findReaders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reader> readers = readerRepository.findAll(pageable);
+        return readers.getContent();
     }
 }
