@@ -23,21 +23,21 @@ import java.util.stream.Collectors;
 @Service
 public class TicketService {
     private static final Logger logger = LogManager.getLogger(TicketService.class);
-    private TicketRepository ticketRepository;
-    private BookRepository bookRepository;
-    private ReaderRepository readerRepository;
+    private final TicketRepository ticketRepository;
+    private final BookRepository bookRepository;
+    private final ReaderRepository readerRepository;
 
     @Autowired
-    public void setTicketRepository(TicketRepository ticketRepository,
-                                    BookRepository bookRepository,
-                                    ReaderRepository readerRepository) {
+    public TicketService(TicketRepository ticketRepository,
+                         BookRepository bookRepository,
+                         ReaderRepository readerRepository) {
         this.ticketRepository = ticketRepository;
         this.bookRepository = bookRepository;
         this.readerRepository = readerRepository;
     }
 
-    public void getBook(Long id, Long bookId) {
-        Optional<Reader> reader = readerRepository.findById(id);
+    public void getBook(Long readerId, Long bookId) {
+        Optional<Reader> reader = readerRepository.findById(readerId);
         Optional<Book> book = bookRepository.findById(bookId);
 
         if (reader.isPresent() && book.isPresent() && book.get().getAmount() >= 1) {
@@ -50,11 +50,9 @@ public class TicketService {
         }
     }
 
-    public void returnBook(Long id, Long bookId) {
+    public void returnBook(Long readerId, Long bookId) {
         Optional<Book> book = bookRepository.findById(bookId);
-        Optional<Ticket> ticket = findAll().stream()
-                .filter(t -> t.getReaderId().getId().equals(id) && t.getBookId().getId().equals(bookId) && t.getDateTo().equals(""))
-                .findFirst();
+        Optional<Ticket> ticket = ticketRepository.findByReaderIdAndBookIdAndDateToIsNull(readerId, bookId);
 
         if(ticket.isPresent() && book.isPresent()) {
             Ticket newTicket = ticket.get();

@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
     private static final Logger logger = LogManager.getLogger(BookService.class);
-    private BookRepository bookRepository;
-    private TicketRepository ticketRepository;
+    private final BookRepository bookRepository;
+    private final TicketRepository ticketRepository;
 
     @Autowired
-    public void setBookRepository(BookRepository bookRepository,
-                                  TicketRepository ticketRepository) {
+    public BookService(BookRepository bookRepository,
+                       TicketRepository ticketRepository) {
         this.bookRepository = bookRepository;
         this.ticketRepository = ticketRepository;
     }
@@ -54,8 +54,8 @@ public class BookService {
         return new BookInformation(freeBooks, busyBooks);
     }
 
-    public BookDto getById(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
+    public BookDto getById(Long bookId) {
+        Optional<Book> book = bookRepository.findById(bookId);
 
         if (book.isPresent()) {
             Long count = countBusyBooks(book.get().getId());
@@ -66,10 +66,10 @@ public class BookService {
         }
     }
 
-    public void update(Long id, Book book) {
-        Optional<Book> bookFromDB = bookRepository.findById(id);
+    public void update(Long bookId, Book book) {
+        Optional<Book> bookFromDB = bookRepository.findById(bookId);
 
-        if (bookFromDB.isPresent() && book.getAmount() >= countBusyBooks(id)) {
+        if (bookFromDB.isPresent() && book.getAmount() >= countBusyBooks(bookId)) {
             Book oldBook = bookFromDB.get();
             oldBook.setName(book.getName());
             oldBook.setAuthor(book.getAuthor());
@@ -82,9 +82,9 @@ public class BookService {
         }
     }
 
-    public void delete(Long id) {
-        if (countBusyBooks(id) == 0) {
-            bookRepository.findById(id).ifPresent(bookRepository::delete);
+    public void delete(Long bookId) {
+        if (countBusyBooks(bookId) == 0) {
+            bookRepository.findById(bookId).ifPresent(bookRepository::delete);
         } else {
             logger.info("Book is not exist or busy.");
             throw new NotFoundException();

@@ -31,8 +31,8 @@ public class ReaderService {
         return readerRepository.findAll();
     }
 
-    public Reader getById(Long id) {
-        Optional<Reader> reader = readerRepository.findById(id);
+    public Reader getById(Long readerId) {
+        Optional<Reader> reader = readerRepository.findById(readerId);
 
         if (reader.isPresent()) {
             return reader.get();
@@ -42,8 +42,8 @@ public class ReaderService {
         }
     }
 
-    public void update(Long id, Reader reader) {
-        Optional<Reader> readerFromDB = readerRepository.findById(id);
+    public void update(Long readerId, Reader reader) {
+        Optional<Reader> readerFromDB = readerRepository.findById(readerId);
 
         if (readerFromDB.isPresent()) {
             Reader oldReader = readerFromDB.get();
@@ -58,8 +58,8 @@ public class ReaderService {
         }
     }
 
-    public void delete(Long id) {
-        Optional<Reader> reader = readerRepository.findById(id);
+    public void delete(Long readerId) {
+        Optional<Reader> reader = readerRepository.findById(readerId);
 
         if(reader.isPresent()) {
             readerRepository.delete(reader.get());
