@@ -40,6 +40,12 @@ public class BookService {
         List<BookDto> freeBooks = new ArrayList<>();
         List<BookDto> busyBooks = new ArrayList<>();
 
+        List<Book> books = findAll();
+        List<Long> booksIds = books.stream().map(Book::getId).collect(Collectors.toList());
+
+
+
+
         List<BookDto> dtoBooks = findAll().stream()
                 .map(b -> new BookDto(b, countBusyBooks(b.getId())))
                 .collect(Collectors.toList());

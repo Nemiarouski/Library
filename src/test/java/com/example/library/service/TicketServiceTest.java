@@ -15,8 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-//@ExtendWith(MockitoExtension.class)
-//@RunWith(MockitoJUnitRunner.class)
+//@ExtendWith(MockitoExtension.class) JUnit 5
+//@RunWith(MockitoJUnitRunner.class) JUnit 4 -->
+//@SpringBootTest
 class TicketServiceTest {
 /*    @Mock
     TicketRepository ticketRepository;
@@ -58,6 +59,11 @@ class TicketServiceTest {
 
         ticketService.returnBook(1L, 1L);
         assertEquals(8, book.getAmount());
+    }
+
+    @Test
+    void findAll() {
+
     }
 
     @Test
