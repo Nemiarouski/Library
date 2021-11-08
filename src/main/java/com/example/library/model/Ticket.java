@@ -1,6 +1,7 @@
 package com.example.library.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tickets")
@@ -70,6 +71,19 @@ public class Ticket {
 
     public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return Objects.equals(id, ticket.id) && Objects.equals(readerId, ticket.readerId) && Objects.equals(bookId, ticket.bookId) && Objects.equals(dateFrom, ticket.dateFrom) && Objects.equals(dateTo, ticket.dateTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, readerId, bookId, dateFrom, dateTo);
     }
 
     @Override

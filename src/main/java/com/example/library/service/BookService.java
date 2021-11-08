@@ -4,6 +4,7 @@ import com.example.library.dto.BookDto;
 import com.example.library.dto.BookInformation;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
+import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.TicketRepository;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,11 +45,13 @@ public class BookService {
         List<Book> books = findAll();
         List<Long> booksIds = books.stream().map(Book::getId).collect(Collectors.toList());
 
+        Map<Book, Long> ticketMap = ticketRepository.findByBookIdInAndDateToIsNull(booksIds).stream()
+                .collect(Collectors.groupingBy(Ticket::getBookId))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> (long) e.getValue().size()));
 
-
-
-        List<BookDto> dtoBooks = findAll().stream()
-                .map(b -> new BookDto(b, countBusyBooks(b.getId())))
+        List<BookDto> dtoBooks = books.stream()
+                .map(b -> new BookDto(b, ticketMap.get(b.getId())))
                 .collect(Collectors.toList());
 
         for (BookDto dtoBook : dtoBooks) {

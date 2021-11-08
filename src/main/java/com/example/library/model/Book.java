@@ -1,6 +1,7 @@
 package com.example.library.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "books")
@@ -79,6 +80,19 @@ public class Book implements Comparable<Book> {
                 ", year='" + year + '\'' +
                 ", amount=" + amount +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) && Objects.equals(name, book.name) && Objects.equals(author, book.author) && Objects.equals(year, book.year) && Objects.equals(amount, book.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, author, year, amount);
     }
 
     @Override

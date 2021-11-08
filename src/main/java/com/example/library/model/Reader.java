@@ -1,6 +1,7 @@
 package com.example.library.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "readers")
@@ -92,6 +93,19 @@ public class Reader {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reader reader = (Reader) o;
+        return Objects.equals(id, reader.id) && Objects.equals(name, reader.name) && Objects.equals(surname, reader.surname) && Objects.equals(login, reader.login) && Objects.equals(password, reader.password) && Objects.equals(enable, reader.enable) && Objects.equals(authority, reader.authority);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, login, password, enable, authority);
     }
 
     @Override

@@ -26,6 +26,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
+    private final static DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Autowired
     public TicketService(TicketRepository ticketRepository,
@@ -86,7 +87,7 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    private String getTime() {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    private static String getTime() {
+        return LocalDateTime.now().format(PATTERN);
     }
 }

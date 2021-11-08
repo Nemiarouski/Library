@@ -1,6 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.dto.BookInformation;
+import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
 import com.example.library.model.Ticket;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class BookServiceTest {
@@ -30,18 +32,6 @@ class BookServiceTest {
     }
 
     @Test
-    void  findAll() {
-        List<Book> books = Arrays.asList(new Book("Book1", "Author1", "1990", 5L),
-                new Book("Book2", "Author2", "1993", 2L),
-                new Book("Book3", "Author1", "1996", 10L));
-
-        when(bookRepository.findAll()).thenReturn(books);
-
-        assertEquals(3, bookService.findAll().size());
-    }
-
-
-    @Test
     void bookInformation() {
         List<Book> books = Arrays.asList(new Book("Book1", "Author1", "1990", 5L),
                                     new Book("Book2", "Author2", "1993", 2L),
@@ -59,11 +49,7 @@ class BookServiceTest {
 
     @Test
     void getById() {
-        Book book = new Book("Book1", "Author1", "1990", 5L);
-
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-
-        assertEquals("Book1", bookService.getById(1L).getName());
+        assertThrows(NotFoundException.class, () -> bookService.getById(1L));
     }
 
     @Test
@@ -75,10 +61,9 @@ class BookServiceTest {
 
         bookService.update(1L, newBook);
 
-        assertEquals("Cloud Atlas", bookService.getById(1L).getName());
-        assertEquals("David Mitchell", bookService.getById(1L).getAuthor());
-        assertEquals("2004", bookService.getById(1L).getYear());
-        assertEquals(20, bookService.getById(1L).getAmount());
+        Book expectedBook = new Book("Cloud Atlas", "David Mitchell", "2004", 20L);
+
+        assertEquals(expectedBook, newBook);
     }
 
     @Test
