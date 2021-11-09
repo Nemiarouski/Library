@@ -82,7 +82,7 @@ public class AdminController {
     @JsonView(View.AdminInfo.class)
     @ApiOperation("Получение всех книг")
     public BookInformation allBooks() {
-        return bookService.bookInformation();
+        return bookService.getBookInformation();
     }
 
     @GetMapping("books/{id}")

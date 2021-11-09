@@ -11,10 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,15 +35,14 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public BookInformation bookInformation() {
+    public BookInformation getBookInformation() {
         List<BookDto> freeBooks = new ArrayList<>();
         List<BookDto> busyBooks = new ArrayList<>();
 
         List<Book> books = findAll();
-        List<Long> booksIds = books.stream().map(Book::getId).collect(Collectors.toList());
 
-        Map<Book, Long> ticketMap = ticketRepository.findByBookIdInAndDateToIsNull(booksIds).stream()
-                .collect(Collectors.groupingBy(Ticket::getBookId))
+        Map<Book, Long> ticketMap = ticketRepository.findByBookIdInAndDateToIsNull(books).stream()
+                .collect(Collectors.groupingBy(Ticket::getBook))
                 .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> (long) e.getValue().size()));
 
@@ -84,7 +80,7 @@ public class BookService {
             oldBook.setName(book.getName());
             oldBook.setAuthor(book.getAuthor());
             oldBook.setYear(book.getYear());
-            oldBook.setAmount(book.getAmount());
+            oldBook.setAmount(book.getAmount() - countBusyBooks(bookId));
             bookRepository.saveAndFlush(oldBook);
         } else {
             logger.info("Book is not exist.");
@@ -93,7 +89,7 @@ public class BookService {
     }
 
     public void delete(Long bookId) {
-        if (countBusyBooks(bookId) == 0) {
+        if (countBusyBooksById(bookId) == 0) {
             bookRepository.findById(bookId).ifPresent(bookRepository::delete);
         } else {
             logger.info("Book is not exist or busy.");
@@ -103,7 +99,13 @@ public class BookService {
 
     private Long countBusyBooks(Long bookId) {
         return ticketRepository.findAll().stream()
-                .filter(b -> b.getBookId().getId().equals(bookId) && b.getDateTo().equals(""))
-                .count();
+                .filter(b -> {
+                    return b.getBook().getId().equals(bookId)
+                            && b.getDateTo().equals("");
+                }).count();
+    }
+
+    private Long countBusyBooksById(Long bookId) {
+        return (long) ticketRepository.findByBookIdAndDateToIsNull(bookId).size();
     }
 }

@@ -7,11 +7,11 @@ import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.ReaderRepository;
 import com.example.library.repository.TicketRepository;
+import com.example.library.utils.TicketComparator;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -76,7 +76,7 @@ class TicketServiceTest {
 
         Map<String, List<TicketDto>> mapTickets = ticketService.getTickets();
 
-
+        //Map<String, List<TicketDto>> expectedTreeMap = new TreeMap<>(new TicketComparator());
 
     }
 

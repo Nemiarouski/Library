@@ -42,7 +42,7 @@ class BookServiceTest {
         when(bookRepository.findAll()).thenReturn(books);
         when(ticketRepository.findAll()).thenReturn(tickets);
 
-        BookInformation bookInformation = bookService.bookInformation();
+        BookInformation bookInformation = bookService.getBookInformation();
 
         assertEquals("Book1", bookInformation.getBusyBooks().get(0).getName());
     }

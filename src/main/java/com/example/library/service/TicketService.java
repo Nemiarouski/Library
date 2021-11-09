@@ -72,7 +72,7 @@ public class TicketService {
 
     public Map<String, List<TicketDto>> getTickets() {
         return findAll().stream()
-                .sorted(Comparator.comparing(Ticket::getBookId)
+                .sorted(Comparator.comparing(Ticket::getBook)
                         .thenComparing(Ticket::getDateFrom)
                         .thenComparing(Ticket::getDateTo))
                 .map(TicketDto::new)
@@ -81,7 +81,7 @@ public class TicketService {
 
     public List<TicketDto> getReaderBooks(Long id) {
         return findAll().stream()
-                .filter(b -> b.getReaderId().getId().equals(id))
+                .filter(b -> b.getReader().getId().equals(id))
                 .sorted(Comparator.comparing(Ticket::getDateFrom))
                 .map(TicketDto::new)
                 .collect(Collectors.toList());
