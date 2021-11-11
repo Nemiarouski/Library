@@ -1,5 +1,6 @@
 package com.example.library.service;
 
+import com.example.library.dto.BookDto;
 import com.example.library.dto.BookInformation;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
@@ -8,6 +9,8 @@ import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -33,18 +36,22 @@ class BookServiceTest {
 
     @Test
     void bookInformation() {
-/*        List<Book> books = Arrays.asList(new Book("Book1", "Author1", "1990", 5L),
+        List<Book> books = Arrays.asList(new Book("Book1", "Author1", "1990", 5L),
                                     new Book("Book2", "Author2", "1993", 2L),
                                     new Book("Book3", "Author1", "1996", 10L));
         Reader reader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
-        List<Ticket> tickets = Arrays.asList(new Ticket(reader, books.get(0), "2021-04-20 14:44", ""));
+        Ticket ticket = new Ticket(reader, books.get(0), LocalDateTime.of(2020, 7,15, 11,33), null);
+        List<Ticket> tickets = new ArrayList<>();
+        tickets.add(ticket);
 
         when(bookRepository.findAll()).thenReturn(books);
-        when(ticketRepository.findAll()).thenReturn(tickets);
+        when(ticketRepository.findByBookInAndDateToIsNull(books)).thenReturn(tickets);
 
         BookInformation bookInformation = bookService.getBookInformation();
 
-        assertEquals("Book1", bookInformation.getBusyBooks().get(0).getName());*/
+        BookDto expectedBook = new BookDto(new Book("Book1", "Author1", "1990", 5L), 1L);
+
+        assertEquals(expectedBook, bookInformation.getBusyBooks().get(0));
     }
 
     @Test
