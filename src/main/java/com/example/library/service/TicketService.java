@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,7 +87,7 @@ public class TicketService {
                         .thenComparing(Ticket::getDateFrom)
                         .thenComparing(Ticket::getDateTo))
                 .map(TicketDto::new)
-                .collect(Collectors.groupingBy(TicketDto::getBookName));
+                .collect(Collectors.groupingBy(TicketDto::getBookName, LinkedHashMap::new, Collectors.toList()));
     }
 
     public List<TicketDto> getReaderBooks(Long id) {

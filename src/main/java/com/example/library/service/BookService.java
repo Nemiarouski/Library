@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,10 +42,10 @@ public class BookService {
 
         List<Book> books = findAll();
 
-        Map<Book, Long> ticketMap = ticketRepository.findByBookIdInAndDateToIsNull(books).stream()
+        Map<Long, Long> ticketMap = ticketRepository.findByBookInAndDateToIsNull(books).stream()
                 .collect(Collectors.groupingBy(Ticket::getBook))
                 .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> (long) e.getValue().size()));
+                .collect(Collectors.toMap(e -> e.getKey().getId(), e -> (long) e.getValue().size()));
 
         List<BookDto> dtoBooks = books.stream()
                 .map(b -> new BookDto(b, ticketMap.get(b.getId())))
@@ -57,6 +58,9 @@ public class BookService {
                 freeBooks.add(dtoBook);
             }
         }
+
+        //busyBooks = dtoBooks.stream().collect(Collectors.partitioningBy(p -> p.getUsed() == 0)).entrySet().stream();
+        //freeBooks = (List<BookDto>) dtoBooks.stream().collect(Collectors.partitioningBy(p -> p.getUsed() != 0));
         return new BookInformation(freeBooks, busyBooks);
     }
 
