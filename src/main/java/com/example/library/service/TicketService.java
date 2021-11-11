@@ -26,7 +26,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
-    private final static DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final static DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public TicketService(TicketRepository ticketRepository,
@@ -41,28 +41,42 @@ public class TicketService {
         Optional<Reader> reader = readerRepository.findById(readerId);
         Optional<Book> book = bookRepository.findById(bookId);
 
+        Ticket ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
+
+        if (ticketFromDb != null) {
+            logger.info("Ticket exists.");
+            throw new NotFoundException();
+        }
+
         if (reader.isPresent() && book.isPresent() && book.get().getAmount() >= 1) {
             book.get().setAmount(book.get().getAmount() - 1);
-            Ticket ticket = new Ticket(reader.get(), book.get(), getTime(), "");
+            Ticket ticket = new Ticket(reader.get(), book.get(), getTime(), null);
             ticketRepository.saveAndFlush(ticket);
         } else {
-            logger.info("Reader or book is not exist.");
-            throw  new NotFoundException();
+            logger.info("Can't find reader or book");
+            throw new NotFoundException();
         }
     }
 
     public void returnBook(Long readerId, Long bookId) {
         Optional<Book> book = bookRepository.findById(bookId);
-        Optional<Ticket> ticket = ticketRepository.findByReaderIdAndBookIdAndDateToIsNull(readerId, bookId);
+        Optional<Reader> reader = readerRepository.findById(readerId);
 
-        if(ticket.isPresent() && book.isPresent()) {
-            Ticket newTicket = ticket.get();
+        if(!reader.isPresent() || !book.isPresent()) {
+            logger.info("Can't find reader or book");
+            throw new NotFoundException();
+        }
+
+        Ticket ticket = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
+
+        if(ticket != null) {
+            Ticket newTicket = ticket;
             book.get().setAmount(book.get().getAmount() + 1);
             newTicket.setDateTo(getTime());
             ticketRepository.saveAndFlush(newTicket);
         } else {
             logger.info("Ticket is not exist.");
-            throw  new NotFoundException();
+            throw new NotFoundException();
         }
     }
 
@@ -87,7 +101,7 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    private static String getTime() {
-        return LocalDateTime.now().format(PATTERN);
+    private static LocalDateTime getTime() {
+        return LocalDateTime.parse(LocalDateTime.now().format(PATTERN), PATTERN);
     }
 }

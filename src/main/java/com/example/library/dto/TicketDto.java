@@ -3,6 +3,7 @@ package com.example.library.dto;
 import com.example.library.model.Ticket;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class TicketDto {
@@ -12,9 +13,9 @@ public class TicketDto {
     @JsonView(View.AdminInfo.class)
     private String readerName;
     @JsonView({View.ReaderInfo.class, View.AdminInfo.class})
-    private String dateFrom;
+    private LocalDateTime dateFrom;
     @JsonView({View.ReaderInfo.class, View.AdminInfo.class})
-    private String dateTo;
+    private LocalDateTime dateTo;
 
     public TicketDto(Ticket ticket) {
         id = ticket.getId();

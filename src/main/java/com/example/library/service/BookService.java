@@ -74,13 +74,14 @@ public class BookService {
 
     public void update(Long bookId, Book book) {
         Optional<Book> bookFromDB = bookRepository.findById(bookId);
+        Long count = countBusyBooks(bookId);
 
-        if (bookFromDB.isPresent() && book.getAmount() >= countBusyBooks(bookId)) {
+        if (bookFromDB.isPresent() && book.getAmount() >= count) {
             Book oldBook = bookFromDB.get();
             oldBook.setName(book.getName());
             oldBook.setAuthor(book.getAuthor());
             oldBook.setYear(book.getYear());
-            oldBook.setAmount(book.getAmount() - countBusyBooks(bookId));
+            oldBook.setAmount(book.getAmount() - count);
             bookRepository.saveAndFlush(oldBook);
         } else {
             logger.info("Book is not exist.");
@@ -89,7 +90,7 @@ public class BookService {
     }
 
     public void delete(Long bookId) {
-        if (countBusyBooksById(bookId) == 0) {
+        if (countBusyBooks(bookId) == 0) {
             bookRepository.findById(bookId).ifPresent(bookRepository::delete);
         } else {
             logger.info("Book is not exist or busy.");
@@ -98,14 +99,6 @@ public class BookService {
     }
 
     private Long countBusyBooks(Long bookId) {
-        return ticketRepository.findAll().stream()
-                .filter(b -> {
-                    return b.getBook().getId().equals(bookId)
-                            && b.getDateTo().equals("");
-                }).count();
-    }
-
-    private Long countBusyBooksById(Long bookId) {
-        return (long) ticketRepository.findByBookIdAndDateToIsNull(bookId).size();
+        return ticketRepository.countByBookIdAndDateToIsNull(bookId);
     }
 }

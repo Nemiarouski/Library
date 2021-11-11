@@ -3,6 +3,8 @@ package com.example.library.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
@@ -22,12 +24,12 @@ public class Ticket {
     private Book book;
 
     @Column(name = "date_from")
-    private String dateFrom;
+    private LocalDateTime dateFrom;
 
     @Column(name = "date_to")
-    private String dateTo;
+    private LocalDateTime dateTo;
 
-    public Ticket(Reader reader, Book book, String dateFrom, String dateTo) {
+    public Ticket(Reader reader, Book book, LocalDateTime dateFrom, LocalDateTime dateTo) {
         this.reader = reader;
         this.book = book;
         this.dateFrom = dateFrom;

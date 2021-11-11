@@ -26,37 +26,37 @@ public class ReaderController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{readerId}")
     @ApiOperation("Получение информации о читателе")
-    public Reader getById(@PathVariable Long id) {
-        return readerService.getById(id);
+    public Reader getById(@PathVariable Long readerId) {
+        return readerService.getById(readerId);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{readerId}")
     @ApiOperation("Обновить информацию о читателе")
-    public void updateReaderInformation(@PathVariable Long id,
+    public void updateReaderInformation(@PathVariable Long readerId,
                                         @RequestBody Reader reader) {
-        readerService.update(id, reader);
+        readerService.update(readerId, reader);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{readerId}")
     @ApiOperation("Читатель берет книгу")
-    public void getBook(@PathVariable Long id,
-                        @RequestBody Long bookId) {
-        ticketService.getBook(id, bookId);
+    public void getBook(@PathVariable long readerId,
+                        @RequestParam long bookId) {
+        ticketService.getBook(readerId, bookId);
     }
 
-    @PostMapping("/{id}/return")
+    @PostMapping("/{readerId}/return")
     @ApiOperation("Читатель возвращает книгу")
-    public void returnBook(@PathVariable Long id,
-                           @RequestBody Long bookId) {
-        ticketService.returnBook(id, bookId);
+    public void returnBook(@PathVariable long readerId,
+                           @RequestParam long bookId) {
+        ticketService.returnBook(readerId, bookId);
     }
 
-    @GetMapping("/{id}/books")
+    @GetMapping("/{readerId}/books")
     @JsonView(View.ReaderInfo.class)
     @ApiOperation("Просмотр нынешних или взятых ранее книг читателя")
-    public List<TicketDto> getReaderBooks(@PathVariable Long id) {
-        return ticketService.getReaderBooks(id);
+    public List<TicketDto> getReaderBooks(@PathVariable Long readerId) {
+        return ticketService.getReaderBooks(readerId);
     }
 }
