@@ -9,6 +9,12 @@ import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,10 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 class BookServiceTest {
-    BookRepository bookRepository = mock(BookRepository.class);
-    TicketRepository ticketRepository = mock(TicketRepository.class);
-    BookService bookService = new BookService(bookRepository, ticketRepository);
+    @Mock
+    BookRepository bookRepository;
+    @Mock
+    TicketRepository ticketRepository;
+    @InjectMocks
+    BookService bookService;
 
     @Test
     void save() {

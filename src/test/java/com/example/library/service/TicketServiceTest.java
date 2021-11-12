@@ -9,6 +9,11 @@ import com.example.library.repository.ReaderRepository;
 import com.example.library.repository.TicketRepository;
 import com.example.library.utils.TicketComparator;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,29 +21,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-//@ExtendWith(MockitoExtension.class) JUnit 5
-//@RunWith(MockitoJUnitRunner.class) JUnit 4 -->
-//@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 class TicketServiceTest {
-/*    @Mock
+    @Mock
     TicketRepository ticketRepository;
     @Mock
     BookRepository bookRepository;
     @Mock
     ReaderRepository readerRepository;
     @InjectMocks
-    TicketService ticketService;*/
-
-    TicketRepository ticketRepository = mock(TicketRepository.class);
-    BookRepository bookRepository = mock(BookRepository.class);
-    ReaderRepository readerRepository = mock(ReaderRepository.class);
-
-    TicketService ticketService = new TicketService(ticketRepository,
-            bookRepository,
-            readerRepository);
+    TicketService ticketService;
 
     @Test
     void getBook() {
