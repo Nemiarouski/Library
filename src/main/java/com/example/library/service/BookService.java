@@ -36,9 +36,8 @@ public class BookService {
     }
 
     public BookInformation getBookInformation() {
-        List<BookDto> freeBooks = new ArrayList<>();
-        List<BookDto> busyBooks = new ArrayList<>();
-
+        List<BookDto> freeBooks;
+        List<BookDto> busyBooks;
         List<Book> books = findAll();
 
         Map<Long, Long> ticketMap = ticketRepository.findByBookInAndDateToIsNull(books).stream()
@@ -50,16 +49,12 @@ public class BookService {
                 .map(b -> new BookDto(b, ticketMap.get(b.getId())))
                 .collect(Collectors.toList());
 
-        for (BookDto dtoBook : dtoBooks) {
-            if (dtoBook.getUsed() != 0) {
-                busyBooks.add(dtoBook);
-            } else {
-                freeBooks.add(dtoBook);
-            }
-        }
+        Map<Boolean, List<BookDto>> freeBusyBooks = dtoBooks.stream()
+                .collect(Collectors.partitioningBy(s -> s.getUsed() != 0));
 
-        //busyBooks = dtoBooks.stream().collect(Collectors.partitioningBy(p -> p.getUsed() == 0)).entrySet().stream();
-        //freeBooks = (List<BookDto>) dtoBooks.stream().collect(Collectors.partitioningBy(p -> p.getUsed() != 0));
+        freeBooks = new ArrayList<>(freeBusyBooks.get(false));
+        busyBooks = new ArrayList<>(freeBusyBooks.get(true));
+
         return new BookInformation(freeBooks, busyBooks);
     }
 
