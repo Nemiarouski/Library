@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS readers (
     enable BOOLEAN NOT NULL,
     authority VARCHAR(100) NOT NULL,
     UNIQUE (name, surname)
-)
+);

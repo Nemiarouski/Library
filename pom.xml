@@ -18,12 +18,6 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>-->
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -118,5 +112,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

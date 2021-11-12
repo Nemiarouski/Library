@@ -47,9 +47,10 @@ class TicketServiceTest {
 
         when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(null);
+        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(Optional.empty());
 
         ticketService.getBook(1L, 1L);
+
         assertEquals(5, book.getAmount());
     }
 
@@ -61,9 +62,10 @@ class TicketServiceTest {
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
-        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(ticket);
+        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(Optional.of(ticket));
 
         ticketService.returnBook(1L, 1L);
+
         assertEquals(8, book.getAmount());
     }
 
@@ -75,15 +77,14 @@ class TicketServiceTest {
         List<Ticket> tickets = new ArrayList<>();
         tickets.add(new Ticket(reader, book1, LocalDateTime.of(2020, 6,11, 14,13), LocalDateTime.of(2020, 7,4, 12,24)));
         tickets.add(new Ticket(reader, book2, LocalDateTime.of(2020, 7,15, 11,33), LocalDateTime.of(2020, 7,28, 10,15)));
-
-        when(ticketRepository.findAll()).thenReturn(tickets);
-
-        Map<String, List<TicketDto>> mapTickets = ticketService.getTickets();
-
         Map<String, List<TicketDto>> expectedMap = tickets.stream()
                 .sorted(new TicketComparator())
                 .map(TicketDto::new)
                 .collect(Collectors.groupingBy(TicketDto::getBookName, Collectors.toList()));
+
+        when(ticketRepository.findAll()).thenReturn(tickets);
+
+        Map<String, List<TicketDto>> mapTickets = ticketService.getTickets();
 
         assertEquals(expectedMap, mapTickets);
     }

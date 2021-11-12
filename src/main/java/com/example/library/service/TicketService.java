@@ -37,10 +37,9 @@ public class TicketService {
     public void getBook(Long readerId, Long bookId) {
         Optional<Reader> reader = readerRepository.findById(readerId);
         Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Ticket> ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
 
-        Ticket ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
-
-        if (ticketFromDb != null) {
+        if (ticketFromDb.isPresent()) {
             logger.info("Ticket exists.");
             throw new NotFoundException();
         }
@@ -58,16 +57,15 @@ public class TicketService {
     public void returnBook(Long readerId, Long bookId) {
         Optional<Book> book = bookRepository.findById(bookId);
         Optional<Reader> reader = readerRepository.findById(readerId);
+        Optional<Ticket> ticket = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
 
         if(!reader.isPresent() || !book.isPresent()) {
             logger.info("Can't find reader or book");
             throw new NotFoundException();
         }
 
-        Ticket ticket = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
-
-        if(ticket != null) {
-            Ticket newTicket = ticket;
+        if(ticket.isPresent()) {
+            Ticket newTicket = ticket.get();
             book.get().setAmount(book.get().getAmount() + 1);
             newTicket.setDateTo(getTime());
             ticketRepository.saveAndFlush(newTicket);
@@ -90,9 +88,9 @@ public class TicketService {
                 .collect(Collectors.groupingBy(TicketDto::getBookName, LinkedHashMap::new, Collectors.toList()));
     }
 
-    public List<TicketDto> getReaderBooks(Long id) {
+    public List<TicketDto> getReaderBooks(Long readerId) {
         return findAll().stream()
-                .filter(b -> b.getReader().getId().equals(id))
+                .filter(b -> b.getReader().getId().equals(readerId))
                 .sorted(Comparator.comparing(Ticket::getDateFrom))
                 .map(TicketDto::new)
                 .collect(Collectors.toList());

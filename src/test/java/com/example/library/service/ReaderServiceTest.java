@@ -33,12 +33,11 @@ class ReaderServiceTest {
     void update() {
         Reader oldReader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
         Reader newReader = new Reader("Robert", "Stinson", "admin", "111", true, "ROLE_READER");
+        Reader expectedReader = new Reader("Robert", "Stinson", "admin", "111", true, "ROLE_READER");
 
         when(readerRepository.findById(1L)).thenReturn(Optional.of(oldReader));
 
         readerService.update(1L, newReader);
-
-        Reader expectedReader = new Reader("Robert", "Stinson", "admin", "111", true, "ROLE_READER");
 
         assertEquals(expectedReader, newReader);
     }

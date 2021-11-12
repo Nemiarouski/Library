@@ -40,10 +40,10 @@ public class AdminController {
         readerService.save(reader);
     }
 
-    @DeleteMapping("/readers/{id}")
+    @DeleteMapping("/readers/{readerId}")
     @ApiOperation("Удаление существующего читателя")
-    public void deleteReader(@PathVariable Long id) {
-        readerService.delete(id);
+    public void deleteReader(@PathVariable Long readerId) {
+        readerService.delete(readerId);
     }
 
     @GetMapping("/readers")
@@ -65,17 +65,17 @@ public class AdminController {
         bookService.save(book);
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping("/books/{bookId}")
     @ApiOperation("Внесение изменений в существующую книгу")
-    public void update(@PathVariable Long id,
+    public void update(@PathVariable Long bookId,
                        @RequestBody Book book) {
-        bookService.update(id, book);
+        bookService.update(bookId, book);
     }
 
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("/books/{bookId}")
     @ApiOperation("Удаление книги")
-    public void deleteBook(@PathVariable Long id) {
-        bookService.delete(id);
+    public void deleteBook(@PathVariable Long bookId) {
+        bookService.delete(bookId);
     }
 
     @GetMapping("/books")
@@ -85,10 +85,10 @@ public class AdminController {
         return bookService.getBookInformation();
     }
 
-    @GetMapping("books/{id}")
+    @GetMapping("books/{bookId}")
     @ApiOperation("Получение одной книги")
-    public BookDto getById(@PathVariable Long id) {
-        return bookService.getById(id);
+    public BookDto getById(@PathVariable Long bookId) {
+        return bookService.getById(bookId);
     }
 
     @GetMapping("/tickets")

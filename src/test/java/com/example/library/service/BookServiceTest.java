@@ -43,13 +43,12 @@ class BookServiceTest {
         Ticket ticket = new Ticket(reader, books.get(0), LocalDateTime.of(2020, 7,15, 11,33), null);
         List<Ticket> tickets = new ArrayList<>();
         tickets.add(ticket);
+        BookDto expectedBook = new BookDto(new Book("Book1", "Author1", "1990", 5L), 1L);
 
         when(bookRepository.findAll()).thenReturn(books);
         when(ticketRepository.findByBookInAndDateToIsNull(books)).thenReturn(tickets);
 
         BookInformation bookInformation = bookService.getBookInformation();
-
-        BookDto expectedBook = new BookDto(new Book("Book1", "Author1", "1990", 5L), 1L);
 
         assertEquals(expectedBook, bookInformation.getBusyBooks().get(0));
     }
@@ -63,12 +62,11 @@ class BookServiceTest {
     void update() {
         Book oldBook = new Book("Book1", "Author1", "1990", 5L);
         Book newBook = new Book("Cloud Atlas", "David Mitchell", "2004", 20L);
+        Book expectedBook = new Book("Cloud Atlas", "David Mitchell", "2004", 20L);
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(oldBook));
 
         bookService.update(1L, newBook);
-
-        Book expectedBook = new Book("Cloud Atlas", "David Mitchell", "2004", 20L);
 
         assertEquals(expectedBook, newBook);
     }
