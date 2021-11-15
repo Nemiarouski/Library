@@ -72,15 +72,18 @@ public class BookService {
 
     public void update(Long bookId, Book book) {
         Optional<Book> bookFromDB = bookRepository.findById(bookId);
-        Long count = countBusyBooks(bookId);
 
-        if (bookFromDB.isPresent() && book.getAmount() >= count) {
-            Book oldBook = bookFromDB.get();
-            oldBook.setName(book.getName());
-            oldBook.setAuthor(book.getAuthor());
-            oldBook.setYear(book.getYear());
-            oldBook.setAmount(book.getAmount() - count);
-            bookRepository.saveAndFlush(oldBook);
+        if (bookFromDB.isPresent()) {
+            Long count = countBusyBooks(bookId);
+
+            if (book.getAmount() >= count) {
+                Book oldBook = bookFromDB.get();
+                oldBook.copyOf(book, count);
+                bookRepository.saveAndFlush(oldBook);
+            } else {
+                logger.info("Not enough books to update.");
+                throw new NotFoundException();
+            }
         } else {
             logger.info("Book is not exist.");
             throw new NotFoundException();

@@ -39,4 +39,11 @@ public class Reader {
         this.enable = enable;
         this.authority = authority;
     }
+
+    public void copyOf(Reader reader) {
+        this.setName(reader.getName());
+        this.setSurname(reader.getSurname());
+        this.setLogin(reader.getLogin());
+        this.setPassword(reader.getPassword());
+    }
 }

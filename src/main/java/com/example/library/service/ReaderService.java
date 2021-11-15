@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +18,16 @@ import java.util.Optional;
 public class ReaderService {
     private static final Logger logger = LogManager.getLogger(ReaderService.class);
     private final ReaderRepository readerRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public ReaderService(ReaderRepository readerRepository) {
+    public ReaderService(ReaderRepository readerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.readerRepository = readerRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public void save(Reader reader) {
+        reader.setPassword(bCryptPasswordEncoder.encode(reader.getPassword()));
         readerRepository.save(reader);
     }
 
@@ -47,10 +51,7 @@ public class ReaderService {
 
         if (readerFromDB.isPresent()) {
             Reader oldReader = readerFromDB.get();
-            oldReader.setName(reader.getName());
-            oldReader.setSurname(reader.getSurname());
-            oldReader.setLogin(reader.getLogin());
-            oldReader.setPassword(reader.getPassword());
+            oldReader.copyOf(reader);
             readerRepository.saveAndFlush(oldReader);
         } else {
             logger.info("Reader is not exist.");

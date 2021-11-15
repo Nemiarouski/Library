@@ -32,6 +32,13 @@ public class Book implements Comparable<Book> {
         this.amount = amount;
     }
 
+    public void copyOf(Book book, Long count) {
+        this.setName(book.getName());
+        this.setAuthor(book.getAuthor());
+        this.setYear(book.getYear());
+        this.setAmount(book.getAmount() - count);
+    }
+
     @Override
     public int compareTo(Book o) {
         return this.name.compareTo(o.getName());
