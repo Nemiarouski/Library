@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,14 +36,15 @@ public class TicketService {
     }
 
     public void getBook(Long readerId, Long bookId) {
-        Optional<Reader> reader = readerRepository.findById(readerId);
-        Optional<Book> book = bookRepository.findById(bookId);
         Optional<Ticket> ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
 
         if (ticketFromDb.isPresent()) {
             logger.info("Ticket exists.");
             throw new NotFoundException();
         }
+
+        Optional<Reader> reader = readerRepository.findById(readerId);
+        Optional<Book> book = bookRepository.findById(bookId);
 
         if (reader.isPresent() && book.isPresent() && book.get().getAmount() >= 1) {
             book.get().setAmount(book.get().getAmount() - 1);
@@ -57,14 +59,15 @@ public class TicketService {
     public void returnBook(Long readerId, Long bookId) {
         Optional<Book> book = bookRepository.findById(bookId);
         Optional<Reader> reader = readerRepository.findById(readerId);
-        Optional<Ticket> ticket = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
 
-        if(!reader.isPresent() || !book.isPresent()) {
+        if (!reader.isPresent() || !book.isPresent()) {
             logger.info("Can't find reader or book");
             throw new NotFoundException();
         }
 
-        if(ticket.isPresent()) {
+        Optional<Ticket> ticket = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
+
+        if (ticket.isPresent()) {
             Ticket newTicket = ticket.get();
             book.get().setAmount(book.get().getAmount() + 1);
             newTicket.setDateTo(getTime());
@@ -89,8 +92,7 @@ public class TicketService {
     }
 
     public List<TicketDto> getReaderBooks(Long readerId) {
-        return findAll().stream()
-                .filter(b -> b.getReader().getId().equals(readerId))
+        return ticketRepository.findByReaderId(readerId).stream()
                 .sorted(Comparator.comparing(Ticket::getDateFrom))
                 .map(TicketDto::new)
                 .collect(Collectors.toList());

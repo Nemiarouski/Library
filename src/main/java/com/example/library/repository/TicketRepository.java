@@ -13,4 +13,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> findByReaderAndBookAndDateToIsNull(@Param("reader_id") Long readerId, @Param("book_id") Long bookId);
     List<Ticket> findByBookInAndDateToIsNull(List<Book> books);
     long countByBookIdAndDateToIsNull(Long bookId);
+    List<Ticket> findByReaderId(Long readerId);
 }
