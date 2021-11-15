@@ -15,10 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -54,6 +52,7 @@ class TicketServiceTest {
         Reader reader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
         Book book = new Book("Triumphal Arch", "Erich Maria Remarque", "1945", 7L);
         Ticket ticket = new Ticket(reader, book, LocalDateTime.of(2020, 6,11, 14,13), null);
+        DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
@@ -62,6 +61,7 @@ class TicketServiceTest {
         ticketService.returnBook(1L, 1L);
 
         assertEquals(8, book.getAmount());
+        assertEquals(LocalDateTime.parse(LocalDateTime.now().format(PATTERN), PATTERN), ticket.getDateTo());
     }
 
     @Test
@@ -96,8 +96,14 @@ class TicketServiceTest {
         tickets.add(ticket1);
         tickets.add(ticket2);
 
-        when(ticketRepository.findAll()).thenReturn(tickets);
+        TicketDto ticketDto1 = new TicketDto(ticket1);
+        TicketDto ticketDto2 = new TicketDto(ticket2);
+        List<TicketDto> expectedList = new LinkedList<>();
+        expectedList.add(ticketDto1);
+        expectedList.add(ticketDto2);
 
-        assertEquals("Triumphal Arch", ticketService.getReaderBooks(1L).get(0).getBookName());
+        when(ticketRepository.findByReaderId(1L)).thenReturn(tickets);
+
+        assertEquals(expectedList, ticketService.getReaderBooks(1L));
     }
 }
