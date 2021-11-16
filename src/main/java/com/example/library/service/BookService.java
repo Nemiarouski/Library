@@ -2,6 +2,7 @@ package com.example.library.service;
 
 import com.example.library.dto.BookDto;
 import com.example.library.dto.BookInformation;
+import com.example.library.exception.BadRequestException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
 import com.example.library.model.Ticket;
@@ -28,6 +29,10 @@ public class BookService {
     }
 
     public void save(Book book) {
+        if (bookRepository.findByName(book.getName()).isPresent()) {
+            logger.info("This book already exists.");
+            throw new BadRequestException("This book already exists.");
+        }
         bookRepository.save(book);
     }
 
