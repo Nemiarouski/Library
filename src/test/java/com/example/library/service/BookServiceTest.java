@@ -38,7 +38,7 @@ class BookServiceTest {
     void save() {
         Book book = new Book("Book1", "Author1", "1990", 5L);
 
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookRepository.findByName("Book1")).thenReturn(Optional.empty());
 
         bookService.save(book);
 

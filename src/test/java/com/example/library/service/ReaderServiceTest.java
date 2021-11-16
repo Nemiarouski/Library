@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +21,8 @@ import static org.mockito.Mockito.*;
 class ReaderServiceTest {
     @Mock
     ReaderRepository readerRepository;
+    @Mock
+    BCryptPasswordEncoder bCryptPasswordEncoder;
     @InjectMocks
     ReaderService readerService;
 
@@ -26,7 +30,7 @@ class ReaderServiceTest {
     void save() {
         Reader reader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
 
-        when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
+        when(readerRepository.findByNameAndSurname("Michel", "Jackson")).thenReturn(Optional.empty());
 
         readerService.save(reader);
 
