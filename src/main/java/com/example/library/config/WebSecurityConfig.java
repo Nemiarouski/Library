@@ -7,14 +7,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     private DataSource dataSource;
 
     @Autowired
@@ -26,26 +24,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery(
-                        "select login, password, 'true' from readers where login=?")
-                .authoritiesByUsernameQuery(
-                        "select login, authority from readers where login=?");
+                .usersByUsernameQuery("select login, password, 'true' from readers where login=?")
+                .passwordEncoder(passwordEncoder())
+                .authoritiesByUsernameQuery("select login, authority from readers where login=?");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/readers/**").permitAll()
-                //.hasAnyRole("READER", "ADMIN")
-                .antMatchers("/admin/**").permitAll()
-                //.hasRole("ADMIN")
+                .antMatchers("/readers/**").hasAnyRole("READER", "ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
                 .and().formLogin();
+        http.httpBasic();
     }
 
     @Bean
-    public PasswordEncoder encoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
