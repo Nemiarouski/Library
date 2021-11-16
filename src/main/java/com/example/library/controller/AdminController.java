@@ -4,7 +4,6 @@ import com.example.library.dto.BookDto;
 import com.example.library.dto.BookInformation;
 import com.example.library.dto.TicketDto;
 import com.example.library.dto.View;
-import com.example.library.exception.NotFoundException;
 import com.example.library.model.Book;
 import com.example.library.model.Reader;
 import com.example.library.service.BookService;
@@ -16,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
@@ -42,7 +40,7 @@ public class AdminController {
 
     @PostMapping("/readers/new")
     @ApiOperation("Создание нового читателя")
-    public void addReader(@RequestBody Reader reader) {
+    public void addReader(@RequestBody @Valid Reader reader) {
         readerService.save(reader);
     }
 
@@ -67,23 +65,14 @@ public class AdminController {
 
     @PostMapping("/books/new")
     @ApiOperation("Создание новой книги")
-    public void addBook(@RequestBody @Valid Book book, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            logger.warn("New book has invalid values in fields");
-            throw new NotFoundException();
-        }
+    public void addBook(@RequestBody @Valid Book book) {
         bookService.save(book);
     }
 
     @PutMapping("/books/{bookId}")
     @ApiOperation("Внесение изменений в существующую книгу")
     public void update(@PathVariable Long bookId,
-                       @RequestBody @Valid Book book,
-                       BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            logger.warn("Book to update has invalid values in fields");
-            throw new NotFoundException();
-        }
+                       @RequestBody @Valid Book book) {
         bookService.update(bookId, book);
     }
 

@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class ReaderController {
     @PutMapping("/{readerId}")
     @ApiOperation("Обновить информацию о читателе")
     public void updateReaderInformation(@PathVariable Long readerId,
-                                        @RequestBody Reader reader) {
+                                        @RequestBody @Valid Reader reader) {
         readerService.update(readerId, reader);
     }
 

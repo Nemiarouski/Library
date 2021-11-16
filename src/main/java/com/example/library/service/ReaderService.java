@@ -1,5 +1,6 @@
 package com.example.library.service;
 
+import com.example.library.exception.BadRequestException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Reader;
 import com.example.library.repository.ReaderRepository;
@@ -27,6 +28,11 @@ public class ReaderService {
     }
 
     public void save(Reader reader) {
+        Optional<Reader> existReader = readerRepository.findByNameAndSurname(reader.getName(), reader.getSurname());
+        if (existReader.isPresent()) {
+            logger.info("This reader already exists.");
+            throw new BadRequestException("This reader already exists.");
+        }
         reader.setPassword(bCryptPasswordEncoder.encode(reader.getPassword()));
         readerRepository.save(reader);
     }
