@@ -27,7 +27,8 @@ public class TicketService {
     private final ReaderRepository readerRepository;
     private final UserService userService;
 
-    public void getBook(Long readerId, Long bookId) {
+    public void getBook(Long bookId) {
+        Long readerId = userService.getUserId();
         Optional<Ticket> ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
 
         if (ticketFromDb.isPresent()) {
@@ -48,7 +49,8 @@ public class TicketService {
         }
     }
 
-    public void returnBook(Long readerId, Long bookId) {
+    public void returnBook(Long bookId) {
+        Long readerId = userService.getUserId();
         Optional<Book> book = bookRepository.findById(bookId);
         Optional<Reader> reader = readerRepository.findById(readerId);
 
@@ -83,7 +85,8 @@ public class TicketService {
                 .collect(Collectors.groupingBy(TicketDto::getBookName, LinkedHashMap::new, Collectors.toList()));
     }
 
-    public List<TicketDto> getReaderBooks(Long readerId) {
+    public List<TicketDto> getReaderBooks() {
+        Long readerId = userService.getUserId();
         return ticketRepository.findByReaderId(readerId).stream()
                 .sorted(Comparator.comparing(Ticket::getDateFrom))
                 .map(TicketDto::new)

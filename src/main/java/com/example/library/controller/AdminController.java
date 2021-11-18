@@ -12,9 +12,7 @@ import com.example.library.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
@@ -23,79 +21,70 @@ import java.util.Map;
 @RestController
 @RequestMapping("admin")
 @Api(tags = "Admin")
+@AllArgsConstructor
 public class AdminController {
-    private static final Logger logger = LogManager.getLogger(AdminController.class);
     private final ReaderService readerService;
     private final BookService bookService;
     private final TicketService ticketService;
 
-    @Autowired
-    public AdminController(ReaderService readerService,
-                           BookService bookService,
-                           TicketService ticketService) {
-        this.readerService = readerService;
-        this.bookService = bookService;
-        this.ticketService = ticketService;
-    }
-
-    @PostMapping("/readers/new")
+    @PostMapping("/newReader")
     @ApiOperation("Создание нового читателя")
     public void addReader(@RequestBody @Valid Reader reader) {
         readerService.save(reader);
     }
 
-    @DeleteMapping("/readers/{readerId}")
+    @DeleteMapping("/deleteReader/{readerId}")
     @ApiOperation("Удаление существующего читателя")
     public void deleteReader(@PathVariable Long readerId) {
         readerService.delete(readerId);
     }
 
-    @GetMapping("/readers")
+    @GetMapping("/allReaders")
     @ApiOperation("Получение списка всех читателей")
     public List<Reader> allReaders() {
         return readerService.findAll();
     }
 
-    @GetMapping("/readers/pageable/{page}")
+    @GetMapping("/allReadersPageable/{page}")
     @ApiOperation("Создание постраничного вывода")
     public List<Reader> showReaders(@PathVariable int page,
                                     @RequestParam int size) {
         return readerService.findReaders(page, size);
     }
 
-    @PostMapping("/books/new")
+    @PostMapping("/newBook")
     @ApiOperation("Создание новой книги")
     public void addBook(@RequestBody @Valid Book book) {
         bookService.save(book);
     }
 
-    @PutMapping("/books/{bookId}")
+    @PutMapping("/updateBook/{bookId}")
     @ApiOperation("Внесение изменений в существующую книгу")
     public void update(@PathVariable Long bookId,
                        @RequestBody @Valid Book book) {
         bookService.update(bookId, book);
     }
 
-    @DeleteMapping("/books/{bookId}")
+    @DeleteMapping("/deleteBook/{bookId}")
     @ApiOperation("Удаление книги")
     public void deleteBook(@PathVariable Long bookId) {
         bookService.delete(bookId);
     }
 
-    @GetMapping("/books")
+    @GetMapping("/allBooks")
     @JsonView(View.AdminInfo.class)
     @ApiOperation("Получение всех книг")
     public BookInformation allBooks() {
         return bookService.getBookInformation();
     }
 
-    @GetMapping("books/{bookId}")
+    @GetMapping("/getBookInfo/{bookId}")
     @ApiOperation("Получение одной книги")
     public BookDto getById(@PathVariable Long bookId) {
         return bookService.getById(bookId);
     }
 
-    @GetMapping("/tickets")
+    @GetMapping("/allTickets")
     @JsonView(View.AdminInfo.class)
     @ApiOperation("Получение билетов")
     public Map<String, List<TicketDto>> getTickets() {

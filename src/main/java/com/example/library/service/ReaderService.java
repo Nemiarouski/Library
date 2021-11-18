@@ -4,9 +4,9 @@ import com.example.library.exception.BadRequestException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.model.Reader;
 import com.example.library.repository.ReaderRepository;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,23 +16,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ReaderService {
     private static final Logger logger = LogManager.getLogger(ReaderService.class);
     private final ReaderRepository readerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    public ReaderService(ReaderRepository readerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.readerRepository = readerRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    private final UserService userService;
 
     public void save(Reader reader) {
         Optional<Reader> existReader = readerRepository.findByNameAndSurname(reader.getName(), reader.getSurname());
+
         if (existReader.isPresent()) {
             logger.info("This reader already exists.");
             throw new BadRequestException("This reader already exists.");
         }
+
         reader.setPassword(bCryptPasswordEncoder.encode(reader.getPassword()));
         readerRepository.save(reader);
     }
@@ -41,7 +39,8 @@ public class ReaderService {
         return readerRepository.findAll();
     }
 
-    public Reader getById(Long readerId) {
+    public Reader getById() {
+        Long readerId = userService.getUserId();
         Optional<Reader> reader = readerRepository.findById(readerId);
 
         if (reader.isPresent()) {
@@ -52,7 +51,14 @@ public class ReaderService {
         }
     }
 
-    public void update(Long readerId, Reader reader) {
+    public void update(Reader reader) {
+        Long readerId = userService.getUserId();
+
+        if (!reader.getId().equals(readerId)) {
+            logger.info("You try changing another reader.");
+            throw new BadRequestException("You try changing another reader.");
+        }
+
         Optional<Reader> readerFromDB = readerRepository.findById(readerId);
 
         if (readerFromDB.isPresent()) {

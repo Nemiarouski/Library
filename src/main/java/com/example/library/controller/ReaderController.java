@@ -8,56 +8,47 @@ import com.example.library.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("readers")
+@RequestMapping("reader")
 @Api(tags = "Readers")
+@AllArgsConstructor
 public class ReaderController {
     private final ReaderService readerService;
     private final TicketService ticketService;
 
-    @Autowired
-    public ReaderController(ReaderService readerService,
-                            TicketService ticketService) {
-        this.readerService = readerService;
-        this.ticketService = ticketService;
-    }
-
-    @GetMapping("/{readerId}")
+    @GetMapping("/getReaderInfo")
     @ApiOperation("Получение информации о читателе")
-    public Reader getById(@PathVariable Long readerId) {
-        return readerService.getById(readerId);
+    public Reader getById() {
+        return readerService.getById();
     }
 
-    @PutMapping("/{readerId}")
+    @PutMapping("/updateReader")
     @ApiOperation("Обновить информацию о читателе")
-    public void updateReaderInformation(@PathVariable Long readerId,
-                                        @RequestBody @Valid Reader reader) {
-        readerService.update(readerId, reader);
+    public void updateReaderInformation(@RequestBody @Valid Reader reader) {
+        readerService.update(reader);
     }
 
-    @PostMapping("/{readerId}")
+    @PostMapping("/getBook")
     @ApiOperation("Читатель берет книгу")
-    public void getBook(@PathVariable long readerId,
-                        @RequestParam long bookId) {
-        ticketService.getBook(readerId, bookId);
+    public void getBook(@RequestParam long bookId) {
+        ticketService.getBook(bookId);
     }
 
-    @PostMapping("/{readerId}/return")
+    @PostMapping("/returnBook")
     @ApiOperation("Читатель возвращает книгу")
-    public void returnBook(@PathVariable long readerId,
-                           @RequestParam long bookId) {
-        ticketService.returnBook(readerId, bookId);
+    public void returnBook(@RequestParam long bookId) {
+        ticketService.returnBook(bookId);
     }
 
-    @GetMapping("/{readerId}/books")
+    @GetMapping("/readerBooks")
     @JsonView(View.ReaderInfo.class)
     @ApiOperation("Просмотр нынешних или взятых ранее книг читателя")
-    public List<TicketDto> getReaderBooks(@PathVariable Long readerId) {
-        return ticketService.getReaderBooks(readerId);
+    public List<TicketDto> getReaderBooks() {
+        return ticketService.getReaderBooks();
     }
 }
