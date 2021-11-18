@@ -8,31 +8,36 @@ import com.example.library.model.Book;
 import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.TicketRepository;
+import com.example.library.utils.ConfigProperties;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class BookService {
     private static final Logger logger = LogManager.getLogger(BookService.class);
     private final BookRepository bookRepository;
     private final TicketRepository ticketRepository;
-
-    @Autowired
-    public BookService(BookRepository bookRepository,
-                       TicketRepository ticketRepository) {
-        this.bookRepository = bookRepository;
-        this.ticketRepository = ticketRepository;
-    }
+    private final ConfigProperties configProperties;
 
     public void save(Book book) {
         if (bookRepository.findByName(book.getName()).isPresent()) {
             logger.info("This book already exists.");
             throw new BadRequestException("This book already exists.");
         }
+
+        if (book.getAmount() > configProperties.getAmount()) {
+            logger.info("Amount is more than max.");
+            throw new BadRequestException("Amount is more than max.");
+        }
+
         bookRepository.save(book);
     }
 
@@ -41,8 +46,6 @@ public class BookService {
     }
 
     public BookInformation getBookInformation() {
-        List<BookDto> freeBooks;
-        List<BookDto> busyBooks;
         List<Book> books = findAll();
 
         Map<Long, Long> ticketMap = ticketRepository.findByBookInAndDateToIsNull(books).stream()
@@ -57,8 +60,8 @@ public class BookService {
         Map<Boolean, List<BookDto>> freeBusyBooks = dtoBooks.stream()
                 .collect(Collectors.partitioningBy(s -> s.getUsed() != 0));
 
-        freeBooks = new ArrayList<>(freeBusyBooks.get(false));
-        busyBooks = new ArrayList<>(freeBusyBooks.get(true));
+        List<BookDto> freeBooks = new ArrayList<>(freeBusyBooks.get(false));
+        List<BookDto> busyBooks = new ArrayList<>(freeBusyBooks.get(true));
 
         return new BookInformation(freeBooks, busyBooks);
     }
@@ -76,6 +79,11 @@ public class BookService {
     }
 
     public void update(Long bookId, Book book) {
+        if (book.getAmount() > configProperties.getAmount()) {
+            logger.info("Amount is more than max.");
+            throw new BadRequestException("Amount is more than max.");
+        }
+
         Optional<Book> bookFromDB = bookRepository.findById(bookId);
 
         if (bookFromDB.isPresent()) {
@@ -87,7 +95,7 @@ public class BookService {
                 bookRepository.saveAndFlush(oldBook);
             } else {
                 logger.info("Not enough books to update.");
-                throw new NotFoundException();
+                throw new BadRequestException();
             }
         } else {
             logger.info("Book is not exist.");
