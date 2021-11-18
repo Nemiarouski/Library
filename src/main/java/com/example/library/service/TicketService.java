@@ -8,32 +8,24 @@ import com.example.library.model.Ticket;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.ReaderRepository;
 import com.example.library.repository.TicketRepository;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TicketService {
     private static final Logger logger = LogManager.getLogger(TicketService.class);
+    private final static DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final TicketRepository ticketRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
-    private final static DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    @Autowired
-    public TicketService(TicketRepository ticketRepository,
-                         BookRepository bookRepository,
-                         ReaderRepository readerRepository) {
-        this.ticketRepository = ticketRepository;
-        this.bookRepository = bookRepository;
-        this.readerRepository = readerRepository;
-    }
+    private final UserService userService;
 
     public void getBook(Long readerId, Long bookId) {
         Optional<Ticket> ticketFromDb = ticketRepository.findByReaderAndBookAndDateToIsNull(readerId, bookId);
