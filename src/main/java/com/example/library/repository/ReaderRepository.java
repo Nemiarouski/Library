@@ -10,5 +10,5 @@ public interface ReaderRepository extends JpaRepository<Reader, Long> {
     Optional<Reader> findByNameAndSurname(String name, String surname);
     Optional<Reader> findById(Long id);
     Page<Reader> findAll(Pageable pageable);
-    Long findByLogin(String login);
+    Optional<Reader> findByLogin(String login);
 }

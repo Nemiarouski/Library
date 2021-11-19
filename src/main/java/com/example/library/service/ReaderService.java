@@ -64,6 +64,7 @@ public class ReaderService {
         if (readerFromDB.isPresent()) {
             Reader oldReader = readerFromDB.get();
             oldReader.copyOf(reader);
+            oldReader.setPassword(bCryptPasswordEncoder.encode(oldReader.getPassword()));
             readerRepository.saveAndFlush(oldReader);
         } else {
             logger.info("Reader is not exist.");
