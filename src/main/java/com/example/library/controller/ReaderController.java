@@ -31,25 +31,29 @@ public class ReaderController {
 
     @PutMapping("/reader/update")
     @ApiOperation("Обновить информацию о читателе")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('READER')")
     public void updateReaderInformation(@RequestBody @Valid Reader reader) {
         readerService.update(reader);
     }
 
     @PostMapping("/book/get")
     @ApiOperation("Читатель берет книгу")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('READER')")
     public void getBook(@RequestParam long bookId) {
         ticketService.getBook(bookId);
     }
 
     @PostMapping("/book/return")
     @ApiOperation("Читатель возвращает книгу")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('READER')")
     public void returnBook(@RequestParam long bookId) {
         ticketService.returnBook(bookId);
     }
 
-    @GetMapping("/bookAll")
+    @GetMapping("/book/all")
     @JsonView(View.ReaderInfo.class)
     @ApiOperation("Просмотр нынешних или взятых ранее книг читателя")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('READER')")
     public List<TicketDto> getReaderBooks() {
         return ticketService.getReaderBooks();
     }
