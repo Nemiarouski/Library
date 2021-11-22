@@ -17,12 +17,12 @@ public class Book implements Comparable<Book> {
     private Long id;
 
     @NotEmpty(message = "Name can't be empty.")
-    @Size(min = 3, max = 30, message = "Name can be between 3 and 30 characters.")
+    @Size(min = 3, max = 50, message = "Name can be between 3 and 50 characters.")
     @Column(name = "name")
     private String name;
 
     @NotEmpty(message = "Author can't be empty.")
-    @Size(min = 3, max = 30, message = "Author can be between 3 and 30 characters.")
+    @Size(min = 3, max = 50, message = "Author can be between 3 and 50 characters.")
     @Column(name = "author")
     private String author;
 

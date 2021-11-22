@@ -40,7 +40,7 @@ public class Reader {
     @Column(name = "enable")
     private Boolean enable;
 
-    @Pattern(regexp = "(ROLE_READER|ROLE_ADMIN)")
+    @Pattern(regexp = "(READER|ADMIN)")
     @NotEmpty(message = "Authority can't be empty.")
     @Column(name = "authority")
     private String authority;
