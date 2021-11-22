@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS tickets (
 INSERT INTO readers (name, surname, login, password, enable, authority) VALUES
 ('Bruce', 'Willis', 'diehard', '$2a$12$K4ONfYxcvsVUxG4DH9jKvea.XDC./qmbDbWSXriVmyDfDdMaLQXxq', 'true', 'READER'),
 ('Michel', 'Jackson', 'king', '$2a$12$GpBh1MMjGTANKv.UQVzz3OVMV8qC1UjPPNAQC8.AsyPmPs.Z5ZdbC', 'true', 'READER'),
-('Jeff', 'Bezos', 'rocketman', '$2a$12$2xvK.s072NX3Gxnq2tIG6.WQZDlZTUAhJ/LSH.oiCfWtuuqxbtcxa', 'true', 'ADMIN');
+('Jeff', 'Bezos', 'rocketman', '$2a$12$2xvK.s072NX3Gxnq2tIG6.WQZDlZTUAhJ/LSH.oiCfWtuuqxbtcxa', 'true', 'ADMIN'),
+('Ilon', 'Mask', 'spacex', '$2a$12$2xvK.s072NX3Gxnq2tIG6.WQZDlZTUAhJ/LSH.oiCfWtuuqxbtcxa', 'true', 'ADMIN');
 
 INSERT INTO books (name, author, year, amount) VALUES
 ('Cloud Atlas', 'David Mitchell', '2004', '1'),
