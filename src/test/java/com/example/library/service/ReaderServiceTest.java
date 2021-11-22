@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,6 +22,8 @@ class ReaderServiceTest {
     ReaderRepository readerRepository;
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Mock
+    UserService userService;
     @InjectMocks
     ReaderService readerService;
 
@@ -39,7 +40,9 @@ class ReaderServiceTest {
 
     @Test
     void getById() {
-        assertThrows(NotFoundException.class, () -> readerService.getById(1L));
+        when(userService.getUserId()).thenReturn(1L);
+
+        assertThrows(NotFoundException.class, () -> readerService.getById());
     }
 
     @Test
@@ -47,10 +50,14 @@ class ReaderServiceTest {
         Reader oldReader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
         Reader newReader = new Reader("Robert", "Stinson", "admin", "111", true, "ROLE_READER");
         Reader expectedReader = new Reader("Robert", "Stinson", "admin", "111", true, "ROLE_READER");
+        oldReader.setId(1L);
+        newReader.setId(1L);
+        expectedReader.setId(1L);
 
+        when(userService.getUserId()).thenReturn(1L);
         when(readerRepository.findById(1L)).thenReturn(Optional.of(oldReader));
 
-        readerService.update(1L, newReader);
+        readerService.update(newReader);
 
         assertEquals(expectedReader, newReader);
     }

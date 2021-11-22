@@ -30,6 +30,8 @@ class TicketServiceTest {
     BookRepository bookRepository;
     @Mock
     ReaderRepository readerRepository;
+    @Mock
+    UserService userService;
     @InjectMocks
     TicketService ticketService;
 
@@ -38,11 +40,12 @@ class TicketServiceTest {
         Reader reader = new Reader("Michel", "Jackson", "king", "777", true, "ROLE_READER");
         Book book = new Book("Triumphal Arch", "Erich Maria Remarque", "1945", 6L);
 
+        when(userService.getUserId()).thenReturn(1L);
+        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(Optional.empty());
         when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-        when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(Optional.empty());
 
-        ticketService.getBook(1L, 1L);
+        ticketService.getBook(1L);
 
         assertEquals(5, book.getAmount());
     }
@@ -54,11 +57,12 @@ class TicketServiceTest {
         Ticket ticket = new Ticket(reader, book, LocalDateTime.of(2020, 6,11, 14,13), null);
         DateTimeFormatter PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+        when(userService.getUserId()).thenReturn(1L);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
         when(ticketRepository.findByReaderAndBookAndDateToIsNull(1L, 1L)).thenReturn(Optional.of(ticket));
 
-        ticketService.returnBook(1L, 1L);
+        ticketService.returnBook( 1L);
 
         assertEquals(8, book.getAmount());
         assertEquals(LocalDateTime.parse(LocalDateTime.now().format(PATTERN), PATTERN), ticket.getDateTo());
@@ -102,8 +106,9 @@ class TicketServiceTest {
         expectedList.add(ticketDto1);
         expectedList.add(ticketDto2);
 
+        when(userService.getUserId()).thenReturn(1L);
         when(ticketRepository.findByReaderId(1L)).thenReturn(tickets);
 
-        assertEquals(expectedList, ticketService.getReaderBooks(1L));
+        assertEquals(expectedList, ticketService.getReaderBooks());
     }
 }
